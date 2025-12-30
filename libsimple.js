@@ -1,229 +1,2296 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!--   <script src="https://unonibes4a.github.io/libjsuibasicos/libsimple.js"></script> -->
-     <script src="libsimple.js"></script>
-    <title>Controles de Formulario Personalizados (JS CSS)</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #222;
-            color: #eee;
-            padding: 20px;
+        class JsTools {   
+
+           static cssScroll=()=>{
+
+                 if (!document.getElementById("scrool302025dic")) {
+            const styleTag = document.createElement('style');
+            styleTag.id = "scrool302025dic";
+            styleTag.textContent = ` ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #333333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #454545; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555555; }
+        * { scrollbar-width: thin; scrollbar-color: #454545 #333333; }
+            `;
+            document.head.appendChild(styleTag);
+        }
+            
+            }
+    static createDiv(id = '', classNames = [], innerHTML = '', parent = null) {
+        const div = document.createElement('div');
+        if (id) div.id = id;
+        if (classNames.length) div.classList.add(...classNames);
+        if (innerHTML) div.innerHTML = innerHTML;
+        if (parent instanceof HTMLElement) parent.appendChild(div);
+        return div;
+    }
+
+    static createElement(tagName, id = '', classNames = [], innerHTML = '', parent = null, attributes = {}) {
+        const element = document.createElement(tagName);
+        if (id) element.id = id;
+        if (classNames.length) element.classList.add(...classNames);
+        if (innerHTML) element.innerHTML = innerHTML;
+        for (const attr in attributes) {
+            if (Object.prototype.hasOwnProperty.call(attributes, attr)) {
+                element.setAttribute(attr, attributes[attr]);
+            }
+        }
+        if (parent instanceof HTMLElement) parent.appendChild(element);
+        return element;
+    }
+
+    static changeParentElement(childElement, newParent, referenceNode = null) {
+        if (!(childElement instanceof HTMLElement)) {
+            console.error("childElement must be an HTMLElement.");
+            return;
+        }
+        if (newParent && !(newParent instanceof HTMLElement)) {
+            console.error("newParent must be an HTMLElement or null.");
+            return;
+        }
+        if (referenceNode && !(referenceNode instanceof HTMLElement)) {
+            console.error("referenceNode must be an HTMLElement or null.");
+            return;
         }
 
-        .control-section {
+        if (newParent) {
+            if (referenceNode) {
+                newParent.insertBefore(childElement, referenceNode);
+            } else {
+                newParent.appendChild(childElement);
+            }
+        } else {
+            if (childElement.parentNode) {
+                childElement.parentNode.removeChild(childElement);
+            }
+        }
+    }
+
+    static deleteElement(element) {
+        if (element instanceof HTMLElement && element.parentNode) {
+            element.parentNode.removeChild(element);
+        } else if (!(element instanceof HTMLElement)) {
+            console.error("Argument must be an HTMLElement.");
+        }
+    }
+
+    static emptyElement(element) {
+        if (element instanceof HTMLElement) {
+            while (element.firstChild) {
+                element.removeChild(element.firstChild);
+            }
+        } else {
+            console.error("Argument must be an HTMLElement.");
+        }
+    }
+
+    static cloneElement(element, deep = true, newParent = null) {
+        if (element instanceof HTMLElement) {
+            const clone = element.cloneNode(deep);
+            if (newParent instanceof HTMLElement) {
+                newParent.appendChild(clone);
+            }
+            return clone;
+        } else {
+            console.error("Argument must be an HTMLElement.");
+            return null;
+        }
+    }
+
+ 
+    static addClass(element, ...classNames) {
+        if (element instanceof HTMLElement) {
+            element.classList.add(...classNames);
+        } else {
+            console.error("Element must be an HTMLElement.");
+        }
+    }
+
+    static removeClass(element, ...classNames) {
+        if (element instanceof HTMLElement) {
+            element.classList.remove(...classNames);
+        } else {
+            console.error("Element must be an HTMLElement.");
+        }
+    }
+
+    static toggleClass(element, className, force) {
+        if (element instanceof HTMLElement) {
+            element.classList.toggle(className, force);
+        } else {
+            console.error("Element must be an HTMLElement.");
+        }
+    }
+
+    static hasClass(element, className) {
+        if (element instanceof HTMLElement) {
+            return element.classList.contains(className);
+        } else {
+            console.error("Element must be an HTMLElement.");
+            return false;
+        }
+    }
+
+    
+    static setAttribute(element, attributeName, value) {
+        if (element instanceof HTMLElement) {
+            element.setAttribute(attributeName, value);
+        } else {
+            console.error("Element must be an HTMLElement.");
+        }
+    }
+
+    static getAttribute(element, attributeName) {
+        if (element instanceof HTMLElement) {
+            return element.getAttribute(attributeName);
+        } else {
+            console.error("Element must be an HTMLElement.");
+            return null;
+        }
+    }
+
+    static removeAttribute(element, attributeName) {
+        if (element instanceof HTMLElement) {
+            element.removeAttribute(attributeName);
+        } else {
+            console.error("Element must be an HTMLElement.");
+        }
+    }
+
+ 
+    static setStyle(element, property, value) {
+        if (element instanceof HTMLElement) {
+            element.style[property] = value;
+        } else {
+            console.error("Element must be an HTMLElement.");
+        }
+    }
+
+    static getStyle(element, property) {
+        if (element instanceof HTMLElement) {
+            return getComputedStyle(element)[property];
+        } else {
+            console.error("Element must be an HTMLElement.");
+            return null;
+        }
+    }
+
+ 
+    static on(element, eventType, handler, options = {}) {
+        if (element instanceof HTMLElement) {
+            element.addEventListener(eventType, handler, options);
+        } else {
+            console.error("Element must be an HTMLElement.");
+        }
+    }
+
+    static off(element, eventType, handler, options = {}) {
+        if (element instanceof HTMLElement) {
+            element.removeEventListener(eventType, handler, options);
+        } else {
+            console.error("Element must be an HTMLElement.");
+        }
+    }
+
+ 
+    static getById(id) {
+        return document.getElementById(id);
+    }
+
+    static query(selector, parent = document) {
+        return parent.querySelector(selector);
+    }
+
+    static queryAll(selector, parent = document) {
+        return Array.from(parent.querySelectorAll(selector));
+    }
+
+ 
+    static debounce(func, delay) {
+        let timeout;
+        return function(...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), delay);
+        };
+    }
+
+    static throttle(func, limit) {
+        let inThrottle;
+        let lastResult;
+        return function(...args) {
+            const context = this;
+            if (!inThrottle) {
+                inThrottle = true;
+                lastResult = func.apply(context, args);
+                setTimeout(() => inThrottle = false, limit);
+            }
+            return lastResult;
+        };
+    }
+
+    static scrollToElement(element, options = { behavior: 'smooth' }) {
+        if (element instanceof HTMLElement) {
+            element.scrollIntoView(options);
+        } else {
+            console.error("Element must be an HTMLElement.");
+        }
+    }
+}
+
+ 
+
+
+
+class BoxDiv {
+    constructor(parentHtml = document.body, title = "Contenedor Desplegable") {
+        this.css();
+        this.parentHtml = parentHtml;
+        this.title = title;
+        this.isOpen = false;
+
+        this.render();
+    }
+
+    render() {
+        this.container = document.createElement('div');
+        this.container.classList.add('control-section30idc2025');
+        this.parentHtml.appendChild(this.container);
+
+        this.header = document.createElement('div');
+        this.header.classList.add('box-div-header');
+        this.container.appendChild(this.header);
+
+        this.titleElement = document.createElement('span');
+        this.titleElement.classList.add('box-div-title');
+        this.titleElement.textContent = this.title;
+        this.header.appendChild(this.titleElement);
+
+        this.toggleButton = document.createElement('button');
+        this.toggleButton.classList.add('box-div-toggle-button');
+        this.toggleButton.innerHTML = '&#9660;';
+        this.toggleButton.addEventListener('click', () => this.toggleContent());
+        this.header.appendChild(this.toggleButton);
+
+        this.contentWrapper = document.createElement('div');
+        this.contentWrapper.classList.add('box-div-content-wrapper');
+        this.container.appendChild(this.contentWrapper);
+
+        this.contentWrapper.innerHTML = `
+            <div class="flex-itemdic202530">Elemento A</div>
+            <div class="flex-itemdic202530">Elemento B</div>
+            <div class="flex-itemdic202530">Elemento C</div>
+            <div class="flex-itemdic202530">Otro elemento</div>
+            <div class="flex-itemdic202530">Un último elemento</div>
+        `;
+
+        this.updateToggleState();
+    }
+
+    toggleContent() {
+        this.isOpen = !this.isOpen;
+        this.updateToggleState();
+    }
+
+    updateToggleState() {
+        if (this.isOpen) {
+            this.contentWrapper.style.maxHeight = "500px";
+            this.contentWrapper.style.visibility = "visible";
+            this.contentWrapper.style.opacity = "1";
+            this.toggleButton.innerHTML = '&#9650;';
+            this.container.classList.add('is-open');
+        } else {
+            this.contentWrapper.style.maxHeight = "0";
+            this.contentWrapper.style.visibility = "hidden";
+            this.contentWrapper.style.opacity = "0";
+            this.toggleButton.innerHTML = '&#9660;';
+            this.container.classList.remove('is-open');
+        }
+    }
+
+    appendChild = (elemnt, bool) => { 
+        if (bool) {
+           elemnt.classList.add('flex-itemdic202530'); 
+        }          
+        this.contentWrapper.appendChild(elemnt);
+    }
+
+    css = () => {
+        if (!document.getElementById("boxdivtogglecss30dic")) {
+            const styleTag = document.createElement('style');
+            styleTag.id = "boxdivtogglecss30dic";
+            styleTag.textContent = `
+                .control-section30idc2025 {
+                    background-color: #333;
+                    border: 1px solid #555;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                    overflow: visible;
+                    transition: all 0.3s ease-out;
+                }
+
+                .box-div-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 10px 15px;
+                    background-color: #444;
+                    cursor: pointer;
+                    border-bottom: 1px solid #555;
+                }
+
+                .control-section30idc2025.is-open .box-div-header {
+                     border-bottom: none;
+                }
+
+                .box-div-title {
+                    color: #fff;
+                    font-size: 1.1em;
+                    font-weight: bold;
+                }
+
+                .box-div-toggle-button {
+                    background: none;
+                    border: none;
+                    color: #fff;
+                    font-size: 1.2em;
+                    cursor: pointer;
+                    padding: 5px;
+                    transition: transform 0.3s ease;
+                }
+
+                .control-section30idc2025.is-open .box-div-toggle-button {
+                    transform: rotate(180deg);
+                }
+
+                .box-div-content-wrapper {
+                    max-height: 0;
+                    overflow: visible;
+                    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                                visibility 0s 0.4s, 
+                                opacity 0.4s ease;
+                    padding: 0 15px;
+                    display: flex;
+                    justify-content: flex-start;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    padding-top: 0;
+                    padding-bottom: 0;
+                    position: relative;
+                    visibility: hidden;
+                    opacity: 0;
+                }
+
+                .control-section30idc2025.is-open .box-div-content-wrapper {
+                    padding-top: 15px;
+                    padding-bottom: 15px;
+                    visibility: visible;
+                    opacity: 1;
+                    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                                visibility 0s, 
+                                opacity 0.4s ease;
+                }
+
+                .flex-itemdic202530 {
+                    background-color: #5cb85c;
+                    color: white;
+                    padding: 10px 15px;
+                    border-radius: 5px;
+                    flex-shrink: 0;
+                    margin-bottom: 5px;
+                }
+            `;
+            document.head.appendChild(styleTag);
+        }
+    }
+}
+
+ 
+        class BoxDiv2{
+             constructor(parentHtml=document.body  ){
+                 this.css();
+                 this.container = document.createElement('div');
+                 this.container .classList.add('control-section30idc2025');                
+                 this.container .innerHTML = ` `;
+                parentHtml.appendChild( this.container );
+            }
+             css = () => {
+                if (!document.getElementById("boxdivcriclecss30dic")) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = "boxdivcriclecss30dic";
+                    styleTag.textContent = `   .control-section30idc2025 {
             background-color: #333;
             border: 1px solid #555;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 20px;
         }
-
-        .control-section h2 {
-            color: #fff;
-            margin-top: 0;
-            border-bottom: 1px solid #555;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            height: auto;
-          
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+            
         }
-        
+
+        class BtCircle{
+            constructor(parentHtml,idGenerico,texto,eventClic=()=>{}){
+                this.css();
+this.label= document.createElement('label');
+                this.label.classList.add('bt30dic2025circle');
+                this.label.id = `${this.idGenerico}btcircle`;
+                this.label.innerHTML = `${texto}`;
+                parentHtml.appendChild(this.label);
+               this.label.onclick=(e)=>{
+                    if(eventClic){eventClic(this.label,e);}
+
+                }
+
+
+            }
+             css = () => {
+                if (!document.getElementById("btcriclecss30dic")) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = "btcriclecss30dic";
+                    styleTag.textContent = `
+                          .bt30dic2025circle{
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            color: #ffffff;
+            background-color: #232323;
+            display: flex;
+            align-items: center;
+            align-content: center;
+            justify-content: center;
+            justify-items: center;
+            font-size: 10px;
+               cursor: pointer;
+
+        }     .bt30dic2025circle:hover{
+            background-color: #282828;
+            border:3px solid #383838;
+
+        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+        }
+ 
+        class Slider18Nov2025 {
+            constructor(htmlParent, idGenerico, min = 0, max = 100, initialValue = 50, step = 1, textLabel = "val", inputEventCallback = () => {}, checboxInputEvento = () => {}, initialCheckboxState = true) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.defaultMinValue = min;
+                this.defaultMaxValue = max;
+                this.defaultInitialValue = initialValue;
+                this.defaultStep = step;
+                this.inputEventCallback = inputEventCallback;
+                this.textLabel = textLabel;
+                this.elemCheckbox = null;
+                this.checboxInputEvento = checboxInputEvento;
+                this.elements = {};
+                this.initialCheckboxState = initialCheckboxState; 
+
+                this.css();
+                this.createSliderElements();
+                this.attachEventListeners();
+                this.updateSliderValueDisplay();
+
+                this.elements.slider.disabled = !this.initialCheckboxState;
+                this.elements.minInput.disabled = !this.initialCheckboxState;
+                this.elements.maxInput.disabled = !this.initialCheckboxState;
+                this.elements.stepInput.disabled = !this.initialCheckboxState;
+            }
+
+            css = () => {
+                if (!document.getElementById("idcss30dicSldier")) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = "idcss30dicSldier";
+                    styleTag.textContent = `
+                        .checboxsldier30div2025{
+                            position: absolute;
+                            right:70px;
+                        }
+                        .gio18112025tag-slider-container {
+                            margin-bottom: 15px;
+                            position: relative; 
+                        }
+
+                        .gio18112025tag-top-row {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 8px;
+                        }
+
+                        .gio18112025tag-label-value {
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                        }
+
+                        .gio18112025tag-toggle-button {
+                            background: #313131;
+                            border: 1px solid #555;
+                            color: #ffffff;
+                            padding: 4px 12px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 0.75rem;
+                            transition: all 0.2s;
+                        }
+
+                        .gio18112025tag-toggle-button:hover {
+                            background: #515151;
+                        }
+
+                        .gio18112025tag-slider-input {
+                            width: 100%;
+                            height: 6px;
+                            background: #555;
+                            border-radius: 3px;
+                            outline: none;
+                            cursor: pointer;
+                        }
+
+                        .gio18112025tag-slider-input::-webkit-slider-thumb {
+                            -webkit-appearance: none;
+                            appearance: none;
+                            width: 16px;
+                            height: 16px;
+                            background: #ffffff;
+                            cursor: pointer;
+                            border-radius: 50%;
+                        }
+
+                        .gio18112025tag-slider-input::-moz-range-thumb {
+                            width: 16px;
+                            height: 16px;
+                            background: #ffffff;
+                            cursor: pointer;
+                            border-radius: 50%;
+                            border: none;
+                        }
+
+                        .gio18112025tag-controls-hidden {
+                            max-height: 0;
+                            overflow: hidden;
+                            transition: max-height 0.3s ease;
+                        }
+
+                        .gio18112025tag-controls-visible {
+                            max-height: 200px;
+                            margin-top: 10px;
+                        }
+
+                        .gio18112025tag-min-max-wrapper,
+                        .gio18112025tagcontenedi {
+                            display: flex;
+                            gap: 8px;
+                            align-items: center;
+                            margin-bottom: 8px;
+                        }
+
+                        .gio18112025tag-label {
+                            color: #aaa;
+                            font-size: 0.85rem;
+                        }
+
+                        .gio18112025tag-input {
+                            background: #313131;
+                            border: 1px solid #555;
+                            color: #ffffff;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            width: 70px;
+                        }
+
+                        .gio18112025tag-reset-button {
+                            background: #515151;
+                            border: 1px solid #666;
+                            color: #ffffff;
+                            padding: 4px 12px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        }
+
+                        .gio18112025tag-reset-button:hover {
+                            background: #616161;
+                        }
+
+                        /* Estilo para slider deshabilitado */
+                        .gio18112025tag-slider-input:disabled {
+                            background: #333;
+                            cursor: not-allowed;
+                        }
+                        .gio18112025tag-slider-input:disabled::-webkit-slider-thumb {
+                            background: #888;
+                            cursor: not-allowed;
+                        }
+                        .gio18112025tag-slider-input:disabled::-moz-range-thumb {
+                            background: #888;
+                            cursor: not-allowed;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+            createSliderElements() {
+                const container = document.createElement('div');
+                container.classList.add('gio18112025tag-slider-container');
+                container.id = `${this.idGenerico}-slider-container`;
+                container.innerHTML = `
+                    <div class="gio18112025tag-top-row">
+                        <label for="${this.idGenerico}-slider" class="gio18112025tag-label-value">${this.textLabel}: <span id="${this.idGenerico}-label-value">${this.defaultInitialValue}</span></label>
+                        <input type="checkbox" class="checboxsldier30div2025" id="checkbox${this.idGenerico}" ${this.initialCheckboxState ? 'checked' : ''}>
+                        <button id="${this.idGenerico}-toggle-button" class="gio18112025tag-toggle-button">Toggle</button>
+                    </div>
+                    <input type="range" id="${this.idGenerico}-slider" class="gio18112025tag-slider-input" min="${this.defaultMinValue}" max="${this.defaultMaxValue}" value="${this.defaultInitialValue}" step="${this.defaultStep}">
+                    <div class="gio18112025tag-controls-hidden" id="${this.idGenerico}-extra-controls">
+                        <div class="gio18112025tag-min-max-wrapper">
+                            <label for="${this.idGenerico}-min-input" class="gio18112025tag-label">Min:</label>
+                            <input type="number" id="${this.idGenerico}-min-input" class="gio18112025tag-input" value="${this.defaultMinValue}">
+                            <label for="${this.idGenerico}-max-input" class="gio18112025tag-label">Max:</label>
+                            <input type="number" id="${this.idGenerico}-max-input" class="gio18112025tag-input" value="${this.defaultMaxValue}">
+                        </div>
+                        <div class="gio18112025tagcontenedi">
+                            <div class="gio18112025tag-stepinput">
+                                <label for="${this.idGenerico}-step-input" class="gio18112025tag-label">Step:</label>
+                                <input type="number" id="${this.idGenerico}-step-input" class="gio18112025tag-input" value="${this.defaultStep}" step="any">
+                            </div>
+                            <button id="${this.idGenerico}-reset-button" class="gio18112025tag-reset-button">Reset</button>
+                        </div>
+                    </div>
+                `;
+                this.htmlParent.appendChild(container);
+                this.elements.slider = container.querySelector(`#${this.idGenerico}-slider`);
+                this.elements.labelValue = container.querySelector(`#${this.idGenerico}-label-value`);
+                this.elements.toggleButton = container.querySelector(`#${this.idGenerico}-toggle-button`);
+                this.elements.extraControls = container.querySelector(`#${this.idGenerico}-extra-controls`);
+                this.elements.resetButton = container.querySelector(`#${this.idGenerico}-reset-button`);
+                this.elements.minInput = container.querySelector(`#${this.idGenerico}-min-input`);
+                this.elements.maxInput = container.querySelector(`#${this.idGenerico}-max-input`);
+                this.elements.stepInput = container.querySelector(`#${this.idGenerico}-step-input`);
+                this.elemCheckbox = document.getElementById(`checkbox${this.idGenerico}`);
+                this.elemCheckbox.addEventListener('change', (e) => {
+                    const isChecked = e.target.checked;
+                    this.elements.slider.disabled = !isChecked;
+                    this.elements.minInput.disabled = !isChecked;
+                    this.elements.maxInput.disabled = !isChecked;
+                    this.elements.stepInput.disabled = !isChecked;
+
+                    if (this.checboxInputEvento) {
+                        this.checboxInputEvento(isChecked, e);
+                    }
+                });
+            }
+
+            attachEventListeners() {
+                if (!this.elements.slider) return;
+                this.elements.slider.addEventListener('input', () => this.handleSliderInput());
+                this.elements.minInput.addEventListener('input', () => this.handleMinInput());
+                this.elements.maxInput.addEventListener('input', () => this.handleMaxInput());
+                this.elements.stepInput.addEventListener('input', () => this.handleStepInput());
+                this.elements.resetButton.addEventListener('click', () => this.handleReset());
+                this.elements.toggleButton.addEventListener('click', () => this.handleToggle());
+            }
+
+            handleSliderInput() {
+                this.updateSliderValueDisplay();
+                this.inputEventCallback(this.elements.slider.value);
+            }
+
+            handleMinInput() {
+                let newMin = parseFloat(this.elements.minInput.value);
+                if (isNaN(newMin)) newMin = this.defaultMinValue;
+                this.elements.slider.min = newMin;
+                if (parseFloat(this.elements.slider.value) < newMin) {
+                    this.elements.slider.value = newMin;
+                    this.updateSliderValueDisplay();
+                }
+                this.inputEventCallback(this.elements.slider.value);
+            }
+
+            handleMaxInput() {
+                let newMax = parseFloat(this.elements.maxInput.value);
+                if (isNaN(newMax)) newMax = this.defaultMaxValue;
+                this.elements.slider.max = newMax;
+                if (parseFloat(this.elements.slider.value) > newMax) {
+                    this.elements.slider.value = newMax;
+                    this.updateSliderValueDisplay();
+                }
+                this.inputEventCallback(this.elements.slider.value);
+            }
+
+            handleStepInput() {
+                let newStep = parseFloat(this.elements.stepInput.value);
+                if (isNaN(newStep) || newStep <= 0) newStep = this.defaultStep;
+                this.elements.slider.step = newStep;
+                this.inputEventCallback(this.elements.slider.value);
+            }
+
+            handleReset() {
+                this.elements.slider.min = this.defaultMinValue;
+                this.elements.slider.max = this.defaultMaxValue;
+                this.elements.slider.value = this.defaultInitialValue;
+                this.elements.slider.step = this.defaultStep;
+                this.elements.minInput.value = this.defaultMinValue;
+                this.elements.maxInput.value = this.defaultMaxValue;
+                this.elements.stepInput.value = this.defaultStep;
+                this.updateSliderValueDisplay();
+                this.inputEventCallback(this.elements.slider.value);
+            }
+
+            handleToggle() {
+                this.elements.extraControls.classList.toggle('gio18112025tag-controls-visible');
+                if (this.elements.extraControls.classList.contains('gio18112025tag-controls-visible')) {
+                    this.elements.toggleButton.textContent = 'Hide';
+                } else {
+                    this.elements.toggleButton.textContent = 'Show';
+                }
+            }
+
+            updateSliderValueDisplay() {
+                if (this.elements.labelValue && this.elements.slider) {
+                    this.elements.labelValue.textContent = this.elements.slider.value;
+                }
+            }
+
+            getValue() {
+                return parseFloat(this.elements.slider.value);
+            }
+
+            setValue(newValue) {
+                this.elements.slider.value = newValue;
+                this.updateSliderValueDisplay();
+                this.inputEventCallback(this.elements.slider.value);
+            }
+        }
+
+    
+        class CheckboxControl {
+            constructor(htmlParent, idGenerico, labelText, initialValue = false, changeCallback = () => {}) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.labelText = labelText;
+                this.initialValue = initialValue;
+                this.changeCallback = changeCallback;
+                this.elements = {};
+
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+            }
+
+            css = () => {
+                if (!document.getElementById(`checboxercss30dic2025`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `checboxercss30dic2025`;
+                    styleTag.textContent = `
+                        .checkbox-control-container {
+                            margin-bottom: 15px;
+                            display: flex;
+                            align-items: center;
+                        }
+                        .checkbox-control-label {
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                            cursor: pointer;
+                        }
+                        .checkbox-control-input {
+                            width: 18px;
+                            height: 18px;
+                            cursor: pointer;
+                            accent-color: #007bff; 
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('checkbox-control-container');
+                container.innerHTML = `
+                    <label for="${this.idGenerico}-checkbox" class="checkbox-control-label">
+                        <input type="checkbox" id="${this.idGenerico}-checkbox" class="checkbox-control-input" ${this.initialValue ? 'checked' : ''}>
+                        <span>${this.labelText}</span>
+                    </label>
+                `;
+                this.htmlParent.appendChild(container);
+                this.elements.checkbox = container.querySelector(`#${this.idGenerico}-checkbox`);
+            }
+
+            attachEventListeners() {
+                this.elements.checkbox.addEventListener('change', (e) => {
+                    this.changeCallback(e.target.checked);
+                });
+            }
+
+            getValue() {
+                return this.elements.checkbox.checked;
+            }
+
+            setValue(newValue) {
+                this.elements.checkbox.checked = newValue;
+                this.changeCallback(newValue);
+            }
+        }
+
+       
+        class NumberInputControl {
+            constructor(htmlParent, idGenerico, labelText, initialValue = 0, step = 1, min = null, max = null, inputCallback = () => {}) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.labelText = labelText;
+                this.initialValue = initialValue;
+                this.defaultValue = initialValue; 
+                this.step = step;
+                this.min = min;
+                this.max = max;
+                this.inputCallback = inputCallback;
+                this.elements = {};
+
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+            }
+
+            css = () => {
+                if (!document.getElementById(`inputNumbercss30dic2025`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `inputNumbercss30dic2025`;
+                    styleTag.textContent = `
+                        .number-input-control-container {
+                            margin-bottom: 15px;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+                        .number-input-label {
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                        }
+                        .number-input-input {
+                            background: #313131;
+                            border: 1px solid #555;
+                            color: #ffffff;
+                            padding: 6px 10px;
+                            border-radius: 4px;
+                            width: 80px;
+                            font-size: 0.9rem;
+                            transition: all 0.2s;
+                        }
+                        .number-input-input:focus {
+                            border-color: #007bff;
+                            outline: none;
+                        }
+                        .number-input-reset-button {
+                            display:none; 
+                            background: #515151;
+                            border: 1px solid #666;
+                            color: #ffffff;
+                            padding: 4px 10px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        }
+                        .number-input-reset-button:hover {
+                            background: #616161;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('number-input-control-container');
+                container.innerHTML = `
+                    <label for="${this.idGenerico}-number-input" class="number-input-label">${this.labelText}:</label>
+                    <input type="number" id="${this.idGenerico}-number-input" class="number-input-input"
+                           value="${this.initialValue}" step="${this.step}"
+                           ${this.min !== null ? `min="${this.min}"` : ''}
+                           ${this.max !== null ? `max="${this.max}"` : ''}>
+                    <button id="${this.idGenerico}-reset-button" class="number-input-reset-button">Reset</button>
+                `;
+                this.htmlParent.appendChild(container);
+                this.elements.input = container.querySelector(`#${this.idGenerico}-number-input`);
+                this.elements.resetButton = container.querySelector(`#${this.idGenerico}-reset-button`);
+            }
+
+            attachEventListeners() {
+                this.elements.input.addEventListener('input', (e) => {
+                    this.inputCallback(parseFloat(e.target.value));
+                });
+                this.elements.resetButton.addEventListener('click', () => {
+                    this.elements.input.value = this.defaultValue;
+                    this.inputCallback(this.defaultValue);
+                });
+            }
+
+            getValue() {
+                return parseFloat(this.elements.input.value);
+            }
+
+            setValue(newValue) {
+                this.elements.input.value = newValue;
+                this.inputCallback(newValue);
+            }
+        }
+
+ 
+        class TextInputControl {
+            constructor(htmlParent, idGenerico, labelText, initialValue = "", inputCallback = () => {}) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.labelText = labelText;
+                this.initialValue = initialValue;
+                this.defaultValue = initialValue; 
+                this.inputCallback = inputCallback;
+                this.elements = {};
+
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+            }
+
+            css = () => {
+                if (!document.getElementById(`inputTextcss30dic2025`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `inputTextcss30dic2025`;
+                    styleTag.textContent = `
+                        .text-input-control-container {
+                            margin-bottom: 15px;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+                        .text-input-label {
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                        }
+                        .text-input-input {
+                            background: #313131;
+                            border: 1px solid #555;
+                            color: #ffffff;
+                            padding: 6px 10px;
+                            border-radius: 4px;
+                            width: 80%;
+                            font-size: 0.9rem;
+                            transition: all 0.2s;
+                        }
+                        .text-input-input:focus {
+                            border-color: #007bff;
+                            outline: none;
+                        }
+                        .text-input-reset-button {
+                            display:none; 
+                            background: #515151;
+                            border: 1px solid #666;
+                            color: #ffffff;
+                            padding: 4px 10px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                        }
+                        .text-input-reset-button:hover {
+                            background: #616161;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('text-input-control-container');
+                container.innerHTML = `
+                    <label for="${this.idGenerico}-text-input" class="text-input-label">${this.labelText}:</label>
+                    <input type="text" id="${this.idGenerico}-text-input" class="text-input-input" value="${this.initialValue}">
+                    <button id="${this.idGenerico}-reset-button" class="text-input-reset-button">Reset</button>
+                `;
+                this.htmlParent.appendChild(container);
+                this.elements.input = container.querySelector(`#${this.idGenerico}-text-input`);
+                this.elements.resetButton = container.querySelector(`#${this.idGenerico}-reset-button`);
+            }
+
+            attachEventListeners() {
+                this.elements.input.addEventListener('input', (e) => {
+                    this.inputCallback(e.target.value);
+                });
+                this.elements.resetButton.addEventListener('click', () => {
+                    this.elements.input.value = this.defaultValue;
+                    this.inputCallback(this.defaultValue);
+                });
+            }
+
+            getValue() {
+                return this.elements.input.value;
+            }
+
+            setValue(newValue) {
+                this.elements.input.value = newValue;
+                this.inputCallback(newValue);
+            }
+        }
+ 
+        class SelectControl {
+            constructor(htmlParent, idGenerico, labelText, options = [], initialValue = null, changeCallback = () => {}) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.labelText = labelText;
+                this.options = options; 
+                this.initialValue = initialValue;
+                this.changeCallback = changeCallback;
+                this.elements = {};
+
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+            }
+
+            css = () => {
+                if (!document.getElementById(`selectcss30dic2025`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `selectcss30dic2025`;
+                    styleTag.textContent = `
+                        .select-control-container {
+                            margin-bottom: 15px;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+                        .select-control-label {
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                        }
+                        .select-control-select {
+                            background: #313131;
+                            border: 1px solid #555;
+                            color: #ffffff;
+                            padding: 6px 10px;
+                            border-radius: 4px;
+                            font-size: 0.9rem;
+                            cursor: pointer;
+                            transition: all 0.2s;
+                            appearance: none; 
+                            -webkit-appearance: none;
+                            -moz-appearance: none;
+                            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13%205.2L146.2%20268.4%2018.8%2074.6c-4.7-4.7-12.2-6.5-17.9-4.5s-9.1%205.7-9.1%2012.3c0%207.2%203.4%2014.2%209.1%2017.9l121.2%20121.2a17.6%2017.6%200%200%200%2025.2%200l121.2-121.2c4.7-4.7%206.5-12.2%204.5-17.9s-5.7-9.1-12.3-9.1h-0.1z%22%2F%3E%3C%2Fsvg%3E'); 
+                            background-repeat: no-repeat;
+                            background-position: right 8px top 50%;
+                            background-size: 12px auto;
+                            padding-right: 30px; 
+                        }
+                        .select-control-select:focus {
+                            border-color: #007bff;
+                            outline: none;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('select-control-container');
+                container.innerHTML = `
+                    <label for="${this.idGenerico}-select" class="select-control-label">${this.labelText}:</label>
+                    <select id="${this.idGenerico}-select" class="select-control-select"></select>
+                `;
+                this.htmlParent.appendChild(container);
+                this.elements.select = container.querySelector(`#${this.idGenerico}-select`);
+
+                this.options.forEach(option => {
+                    const opt = document.createElement('option');
+                    opt.value = option.value;
+                    opt.textContent = option.text;
+                    this.elements.select.appendChild(opt);
+                });
+
+                if (this.initialValue) {
+                    this.elements.select.value = this.initialValue;
+                }
+            }
+
+            attachEventListeners() {
+                this.elements.select.addEventListener('change', (e) => {
+                    this.changeCallback(e.target.value);
+                });
+            }
+
+            getValue() {
+                return this.elements.select.value;
+            }
+
+            setValue(newValue) {
+                this.elements.select.value = newValue;
+                this.changeCallback(newValue);
+            }
+        }
 
       
-    
-    </style>
-</head>
-<body>
+        class ButtonControl {
+            constructor(htmlParent, idGenerico, buttonText, clickCallback = () => {}, className = '') {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.buttonText = buttonText;
+                this.clickCallback = clickCallback;
+                this.className = className; 
+                this.elements = {};
 
-    <h1>Controles Personalizados</h1>
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+            }
 
-    <div id="controls-container">
-        <div class="control-section">
-            <h2>Slider Control</h2>        
-            <div id="slider-parent"></div>
-        </div>
+            css = () => {
+                if (!document.getElementById(`botoncss30dic2025`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `botoncss30dic2025`;
+                    styleTag.textContent = `
+                        .button-control-container {
+                            margin-bottom: 15px;
+                        }
+                        .button-control-button {
+                            background: #007bff;
+                            border: 1px solid #0056b3;
+                            color: #ffffff;
+                            padding: 8px 15px;
+                            border-radius: 4px;
+                            font-size: 0.9rem;
+                            cursor: pointer;
+                            transition: background-color 0.2s, border-color 0.2s;
+                        }
+                        .button-control-button:hover {
+                            background: #0056b3;
+                            border-color: #004085;
+                        }
+                        /* Ejemplo de clase adicional */
+                        .button-control-button.danger {
+                            background: #dc3545;
+                            border-color: #bd2130;
+                        }
+                        .button-control-button.danger:hover {
+                            background: #bd2130;
+                            border-color: #a71d2a;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
 
-        <div class="control-section">
-            <h2>Checkbox Control</h2>
-            <div id="checkbox-parent"></div>
-        </div>
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('button-control-container');
+                container.innerHTML = `
+                    <button id="${this.idGenerico}-button" class="button-control-button ${this.className}">${this.buttonText}</button>
+                `;
+                this.htmlParent.appendChild(container);
+                this.elements.button = container.querySelector(`#${this.idGenerico}-button`);
+            }
 
-        <div class="control-section">    
-            <h2>Number Input Control</h2>
-            <div id="number-input-parent"></div>
-        </div>
+            attachEventListeners() {
+                this.elements.button.addEventListener('click', () => {
+                    this.clickCallback();
+                });
+            }
+        }
 
-        <div class="control-section">
-            <h2>Text Input Control</h2>
-            <div id="text-input-parent"></div>
-        </div>
+      
+        class TimePickerControl {
+            constructor(htmlParent, idGenerico, labelText, initialTime = "12:00", changeCallback = () => {}) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.labelText = labelText;
+                this.initialTime = initialTime;
+                this.changeCallback = changeCallback;
+                this.elements = {};
 
-        <div class="control-section">
-            <h2>Select Control</h2>
-            <div id="select-parent"></div>
-        </div>
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+            }
 
-        <div class="control-section">
-            <h2>Button Control</h2>
-            <div id="button-parent"></div>
-        </div>
+            css = () => {
+                if (!document.getElementById(`timePickerCss30dic2025`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `timePickerCss30dic2025`;
+                    styleTag.textContent = `
+                        .timepicker-control-container {
+                            margin-bottom: 15px;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+                        .timepicker-control-label {
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                        }
+                        .timepicker-control-input {
+                            background: #313131;
+                            border: 1px solid #555;
+                            color: #ffffff;
+                            padding: 6px 10px;
+                            border-radius: 4px;
+                            width: 120px;
+                            font-size: 0.9rem;
+                            transition: all 0.2s;
+                        }
+                        .timepicker-control-input:focus {
+                            border-color: #007bff;
+                            outline: none;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
 
-        <div class="control-section">
-            <h2>Time Picker Control</h2>
-            <div id="timepicker-parent"></div>
-        </div>
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('timepicker-control-container');
+                container.innerHTML = `
+                    <label for="${this.idGenerico}-time-input" class="timepicker-control-label">${this.labelText}:</label>
+                    <input type="time" id="${this.idGenerico}-time-input" class="timepicker-control-input" value="${this.initialTime}">
+                `;
+                this.htmlParent.appendChild(container);
+                this.elements.input = container.querySelector(`#${this.idGenerico}-time-input`);
+            }
 
-        <div class="control-section">
-            <h2>Range Control (Doble Slider)</h2>
-            <div id="range-parent"></div>
-        </div>
+            attachEventListeners() {
+                this.elements.input.addEventListener('change', (e) => {
+                    this.changeCallback(e.target.value);
+                });
+            }
 
-        <div class="control-section">
-            <h2>Color Picker Control</h2>
-            <div id="colorpicker-parent"></div>
-        </div>
+            getValue() {
+                return this.elements.input.value;
+            }
 
-     
-        <div class="control-section">
-            <h2>Calendar Control (Fecha Única)</h2>
-            <div id="calendar-parent"></div>
-        </div>
+            setValue(newTime) {
+                this.elements.input.value = newTime;
+                this.changeCallback(newTime);
+            }
+        }
 
-        <div class="control-section">
-            <h2>Date Range Control (Rango de Fechas)</h2>
-            <div id="date-range-parent"></div>
-        </div>
-    </div>
+      
+        class RangeControl {
+            constructor(htmlParent, idGenerico, labelText, min = 0, max = 100, initialValue1 = 25, initialValue2 = 75, step = 1, changeCallback = () => {}) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.labelText = labelText;
+                this.min = min;
+                this.max = max;
+                this.initialValue1 = initialValue1;
+                this.initialValue2 = initialValue2;
+                this.step = step;
+                this.changeCallback = changeCallback;
+                this.elements = {};
 
-    <script> 
- 
-document.addEventListener('DOMContentLoaded', () => {
-    const buttonParent = document.getElementById('button-parent');
-    
-    // Botón hexagonal normal
-    new HexagonalButton(buttonParent, 'hexBtn1', 'Guardar', 
-        () => { console.log('Botón Guardar clickeado'); }
-    );
-    
-    // Botón hexagonal de peligro
-    const dangerBtn = new HexagonalButton(buttonParent, 'hexBtn2', 'Eliminar', 
-        () => { alert('¡Acción peligrosa!'); }
-    );
-    dangerBtn.setStyle('danger');
-    
-    // Botón hexagonal de éxito
-    const successBtn = new HexagonalButton(buttonParent, 'hexBtn3', 'Confirmar', 
-        () => { console.log('Confirmado'); }
-    );
-    successBtn.setStyle('success');
-    
-    // Botón hexagonal de advertencia
-    const warningBtn = new HexagonalButton(buttonParent, 'hexBtn4', 'Advertir', 
-        () => { console.log('Advertencia'); }
-    );
-    warningBtn.setStyle('warning');
-});
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+                this.updateDisplay();
+            }
 
+            css = () => {
+                if (!document.getElementById(`rangeControlCss30dic2025`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `rangeControlCss30dic2025`;
+                    styleTag.textContent = `
+                        .range-control-container {
+                            margin-bottom: 15px;
+                        }
+                        .range-control-label {
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                            margin-bottom: 8px;
+                            display: block;
+                        }
+                        .range-control-sliders {
+                            position: relative;
+                            height: 20px;
+                            margin-top: 10px;
+                        }
+                        .range-control-slider {
+                            position: absolute;
+                            width: 100%;
+                            height: 6px;
+                            background: #555;
+                            border-radius: 3px;
+                            outline: none;
+                            pointer-events: none; 
+                        }
+                        .range-control-slider::-webkit-slider-thumb {
+                            -webkit-appearance: none;
+                            appearance: none;
+                            width: 16px;
+                            height: 16px;
+                            background: #007bff; 
+                            cursor: grab;
+                            border-radius: 50%;
+                            pointer-events: all; 
+                            position: relative;
+                            z-index: 2; 
+                            border: 1px solid #0056b3;
+                        }
+                        .range-control-slider::-moz-range-thumb {
+                            width: 16px;
+                            height: 16px;
+                            background: #007bff;
+                            cursor: grab;
+                            border-radius: 50%;
+                            pointer-events: all;
+                            position: relative;
+                            z-index: 2;
+                            border: 1px solid #0056b3;
+                        }
+                        /* Estilo para el track de progreso entre los thumbs */
+                        .range-control-track-highlight {
+                            position: absolute;
+                            height: 6px;
+                            background-color: #007bff; 
+                            border-radius: 3px;
+                            z-index: 1; 
+                            top: 7px; 
+                        }
+                        .range-control-values {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-top: 10px;
+                            color: #aaa;
+                            font-size: 0.85rem;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
 
-     
-        document.addEventListener('DOMContentLoaded', () => {
-          
-            const sliderParent = document.getElementById('slider-parent');
-            new Slider18Nov2025(sliderParent, 'myFancySlider', 0, 200, 75, 0.01, 'Volumen',
-                (value) => { console.log("Slider Value:", value); },
-                (isChecked) => { console.log("Slider Checkbox State:", isChecked); },
-                true 
-            );
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('range-control-container');
+                container.innerHTML = `
+                    <label class="range-control-label">${this.labelText}: <span id="${this.idGenerico}-display-value"></span></label>
+                    <div class="range-control-sliders">
+                        <div id="${this.idGenerico}-track-highlight" class="range-control-track-highlight"></div>
+                        <input type="range" id="${this.idGenerico}-slider1" class="range-control-slider" min="${this.min}" max="${this.max}" value="${this.initialValue1}" step="${this.step}">
+                        <input type="range" id="${this.idGenerico}-slider2" class="range-control-slider" min="${this.min}" max="${this.max}" value="${this.initialValue2}" step="${this.step}">
+                    </div>
+                    <div class="range-control-values">
+                        <span id="${this.idGenerico}-min-display">${this.min}</span>
+                        <span id="${this.idGenerico}-max-display">${this.max}</span>
+                    </div>
+                `;
+                this.htmlParent.appendChild(container);
 
- 
-            const checkboxParent = document.getElementById('checkbox-parent');
-            new CheckboxControl(checkboxParent, 'myCheckbox', 'Habilitar Característica', true,
-                (isChecked) => { console.log("Checkbox 'Habilitar Característica':", isChecked); }
-            );
+                this.elements.slider1 = container.querySelector(`#${this.idGenerico}-slider1`);
+                this.elements.slider2 = container.querySelector(`#${this.idGenerico}-slider2`);
+                this.elements.displayValue = container.querySelector(`#${this.idGenerico}-display-value`);
+                this.elements.trackHighlight = container.querySelector(`#${this.idGenerico}-track-highlight`);
+            }
+
+            attachEventListeners() {
+                const updateAndCallback = () => {
+                    this.updateDisplay();
+                    this.changeCallback(this.getValue());
+                };
+
+                this.elements.slider1.addEventListener('input', () => {
+                    if (parseFloat(this.elements.slider1.value) > parseFloat(this.elements.slider2.value)) {
+                        this.elements.slider1.value = this.elements.slider2.value;
+                    }
+                    updateAndCallback();
+                });
+
+                this.elements.slider2.addEventListener('input', () => {
+                    if (parseFloat(this.elements.slider2.value) < parseFloat(this.elements.slider1.value)) {
+                        this.elements.slider2.value = this.elements.slider1.value;
+                    }
+                    updateAndCallback();
+                });
+            }
+
+            updateDisplay() {
+                let val1 = parseFloat(this.elements.slider1.value);
+                let val2 = parseFloat(this.elements.slider2.value);
+
+                const currentMin = Math.min(val1, val2);
+                const currentMax = Math.max(val1, val2);
+
+                this.elements.displayValue.textContent = `${currentMin} - ${currentMax}`;
+
+                const totalRange = this.max - this.min;
+                const leftPercent = ((currentMin - this.min) / totalRange) * 100;
+                const widthPercent = ((currentMax - currentMin) / totalRange) * 100;
+
+                this.elements.trackHighlight.style.left = `${leftPercent}%`;
+                this.elements.trackHighlight.style.width = `${widthPercent}%`;
+            }
+
+            getValue() {
+                return {
+                    value1: parseFloat(this.elements.slider1.value),
+                    value2: parseFloat(this.elements.slider2.value)
+                };
+            }
+
+            setValue(newValue1, newValue2) {
+                newValue1 = Math.max(this.min, Math.min(this.max, newValue1));
+                newValue2 = Math.max(this.min, Math.min(this.max, newValue2));
+
+                this.elements.slider1.value = newValue1;
+                this.elements.slider2.value = newValue2;
+                this.updateDisplay();
+                this.changeCallback(this.getValue());
+            }
+        }
+
+        
+        class ColorPickerControl {
+            constructor(htmlParent, idGenerico, labelText, initialColor = "#007bff", changeCallback = () => {}) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.labelText = labelText;
+                this.initialColor = initialColor;
+                this.changeCallback = changeCallback;
+                this.elements = {};
+
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+                this.updateDisplayColor();
+            }
+
+            css = () => {
+                if (!document.getElementById(`colorPickerCss30dic2025`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `colorPickerCss30dic2025`;
+                    styleTag.textContent = `
+                        .colorpicker-control-container {
+                            margin-bottom: 15px;
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+                        .colorpicker-control-label {
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                        }
+                        .colorpicker-control-input {
+                            -webkit-appearance: none;
+                            -moz-appearance: none;
+                            appearance: none;
+                            width: 40px; 
+                            height: 40px;
+                            background-color: transparent;
+                            border: none;
+                            cursor: pointer;
+                            padding: 0;
+                        }
+                        .colorpicker-control-input::-webkit-color-swatch-wrapper {
+                            padding: 0;
+                        }
+                        .colorpicker-control-input::-webkit-color-swatch {
+                            border: 1px solid #555;
+                            border-radius: 4px;
+                        }
+                        .colorpicker-control-input::-moz-color-swatch-wrapper {
+                            padding: 0;
+                        }
+                        .colorpicker-control-input::-moz-color-swatch {
+                            border: 1px solid #555;
+                            border-radius: 4px;
+                        }
+                        .colorpicker-control-text-input {
+                            background: #313131;
+                            border: 1px solid #555;
+                            color: #ffffff;
+                            padding: 6px 10px;
+                            border-radius: 4px;
+                            width: 90px;
+                            font-size: 0.9rem;
+                            transition: all 0.2s;
+                            text-transform: uppercase; 
+                        }
+                        .colorpicker-control-text-input:focus {
+                            border-color: #007bff;
+                            outline: none;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('colorpicker-control-container');
+                container.innerHTML = `
+                    <label for="${this.idGenerico}-color-input" class="colorpicker-control-label">${this.labelText}:</label>
+                    <input type="color" id="${this.idGenerico}-color-input" class="colorpicker-control-input" value="${this.initialColor}">
+                    <input type="text" id="${this.idGenerico}-text-input" class="colorpicker-control-text-input" value="${this.initialColor.toUpperCase()}">
+                `;
+                this.htmlParent.appendChild(container);
+                this.elements.colorInput = container.querySelector(`#${this.idGenerico}-color-input`);
+                this.elements.textInput = container.querySelector(`#${this.idGenerico}-text-input`);
+            }
+
+            attachEventListeners() {
+                this.elements.colorInput.addEventListener('input', (e) => {
+                    const color = e.target.value;
+                    this.elements.textInput.value = color.toUpperCase();
+                    this.changeCallback(color);
+                });
+
+                this.elements.textInput.addEventListener('input', (e) => {
+                    let color = e.target.value;
+                    if (/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(color)) {
+                        this.elements.colorInput.value = color;
+                        this.changeCallback(color);
+                    }
+                });
+
+                this.elements.textInput.addEventListener('blur', () => {
+                    this.elements.textInput.value = this.elements.colorInput.value.toUpperCase();
+                });
+            }
+
+            updateDisplayColor() {
+                this.elements.colorInput.value = this.initialColor;
+                this.elements.textInput.value = this.initialColor.toUpperCase();
+            }
+
+            getValue() {
+                return this.elements.colorInput.value;
+            }
+
+            setValue(newColor) {
+                if (/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(newColor)) {
+                    this.elements.colorInput.value = newColor;
+                    this.elements.textInput.value = newColor.toUpperCase();
+                    this.changeCallback(newColor);
+                } else {
+                    console.warn("ColorPickerControl: El formato de color no es HEX válido. Se espera #RRGGBB o #RGB.");
+                }
+            }
+        }
+
+      
+        class CalendarControl {
+            constructor(htmlParent, idGenerico, labelText, initialDate = new Date(), changeCallback = () => {}) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.labelText = labelText;
+                this.selectedDate = this.normalizeDate(initialDate); 
+                this.currentMonth = this.selectedDate.getMonth();
+                this.currentYear = this.selectedDate.getFullYear();
+                this.changeCallback = changeCallback;
+                this.elements = {};
+
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+                this.renderCalendar();
+            }
+
+            css = () => {
+                if (!document.getElementById(`calendarControlCss`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `calendarControlCss`;
+                    styleTag.textContent = `
+                        .calendar-control-container {
+                            margin-bottom: 15px;
+                            position: relative;
+                        }
+                        .calendar-control-label {
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                            margin-bottom: 8px;
+                            display: block;
+                        }
+                        .calendar-display-input {
+                            background: #313131;
+                            border: 1px solid #555;
+                            color: #ffffff;
+                            padding: 6px 10px;
+                            border-radius: 4px;
+                            width: 150px;
+                            font-size: 0.9rem;
+                            cursor: pointer;
+                            position: relative;
+                            z-index: 0;
+                        }
+                        .calendar-popup {
+                            position: absolute;
+                            background-color: #444;
+                            border: 1px solid #666;
+                            border-radius: 8px;
+                            padding: 15px;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                            z-index: 1000;
+                            display: none; /* Oculto por defecto */
+                            top: 100%; /* Aparece debajo del input */
+                            left: 0;
+                            margin-top: 5px;
+                        }
+                        .calendar-popup.open {
+                            display: block;
+                        }
+                        .calendar-header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 10px;
+                        }
+                        .calendar-header button {
+                            background: #515151;
+                            border: 1px solid #666;
+                            color: #ffffff;
+                            padding: 5px 10px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                        }
+                        .calendar-header button:hover {
+                            background: #616161;
+                        }
+                        .calendar-title {
+                            color: #ffffff;
+                            font-weight: bold;
+                        }
+                        .calendar-grid {
+                            display: grid;
+                            grid-template-columns: repeat(7, 1fr);
+                            gap: 5px;
+                            text-align: center;
+                        }
+                        .calendar-day-header {
+                            color: #aaa;
+                            font-size: 0.8em;
+                        }
+                        .calendar-day {
+                            padding: 8px 5px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            transition: background-color 0.2s;
+                            font-size: 0.9em;
+                        }
+                        .calendar-day:hover:not(.empty):not(.disabled):not(.selected) {
+                            background-color: #555;
+                        }
+                        .calendar-day.empty {
+                            visibility: hidden;
+                        }
+                        .calendar-day.current-month {
+                            color: #eee;
+                        }
+                        .calendar-day.other-month {
+                            color: #888;
+                        }
+                        .calendar-day.selected {
+                            background-color: #007bff;
+                            color: #fff;
+                            font-weight: bold;
+                        }
+                        .calendar-day.today {
+                            border: 1px solid #007bff;
+                        }
+                        .calendar-day.disabled {
+                            color: #666;
+                            cursor: not-allowed;
+                            background-color: #383838;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('calendar-control-container');
+                container.innerHTML = `
+                    <label for="${this.idGenerico}-date-input" class="calendar-control-label">${this.labelText}:</label>
+                    <input type="text" id="${this.idGenerico}-date-input" class="calendar-display-input" readonly value="${this.formatDate(this.selectedDate)}">
+                    <div id="${this.idGenerico}-calendar-popup" class="calendar-popup">
+                        <div class="calendar-header">
+                            <button id="${this.idGenerico}-prev-month">&lt;</button>
+                            <span id="${this.idGenerico}-month-year" class="calendar-title"></span>
+                            <button id="${this.idGenerico}-next-month">&gt;</button>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day-header">Dom</div>
+                            <div class="calendar-day-header">Lun</div>
+                            <div class="calendar-day-header">Mar</div>
+                            <div class="calendar-day-header">Mié</div>
+                            <div class="calendar-day-header">Jue</div>
+                            <div class="calendar-day-header">Vie</div>
+                            <div class="calendar-day-header">Sáb</div>
+                        </div>
+                    </div>
+                `;
+                this.htmlParent.appendChild(container);
+
+                this.elements.displayInput = container.querySelector(`#${this.idGenerico}-date-input`);
+                this.elements.calendarPopup = container.querySelector(`#${this.idGenerico}-calendar-popup`);
+                this.elements.prevMonthBtn = container.querySelector(`#${this.idGenerico}-prev-month`);
+                this.elements.nextMonthBtn = container.querySelector(`#${this.idGenerico}-next-month`);
+                this.elements.monthYearSpan = container.querySelector(`#${this.idGenerico}-month-year`);
+                this.elements.calendarGrid = container.querySelector(`.calendar-grid`);
+            }
+
+            attachEventListeners() {
+                this.elements.displayInput.addEventListener('click', () => {
+                    this.elements.calendarPopup.classList.toggle('open');
+                    this.renderCalendar();  
+                });
+
+                this.elements.prevMonthBtn.addEventListener('click', () => {
+                    this.changeMonth(-1);
+                });
+
+                this.elements.nextMonthBtn.addEventListener('click', () => {
+                    this.changeMonth(1);
+                });
+
+              
+                document.addEventListener('click', (event) => {
+                    if (!this.htmlParent.contains(event.target)) {
+                        this.elements.calendarPopup.classList.remove('open');
+                    }
+                });
+            }
+
+            renderCalendar() {
+                this.elements.calendarGrid.querySelectorAll('.calendar-day:not(.calendar-day-header)').forEach(day => day.remove());
+
+                const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1);
+                const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+                const startDay = firstDayOfMonth.getDay();  
+
+                this.elements.monthYearSpan.textContent = `${firstDayOfMonth.toLocaleString('es-ES', { month: 'long' })} ${this.currentYear}`;
+
+                 
+                for (let i = 0; i < startDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.classList.add('calendar-day', 'empty');
+                    this.elements.calendarGrid.appendChild(emptyDay);
+                }
 
          
-            const numberInputParent = document.getElementById('number-input-parent');
-            new NumberInputControl(numberInputParent, 'myNumberInput', 'Cantidad', 10, 0.5, 0, 100,
-                (value) => { console.log("Number Input Value:", value); }
-            );
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('calendar-day', 'current-month');
+                    dayElement.textContent = day;
+                    dayElement.dataset.date = new Date(this.currentYear, this.currentMonth, day).toDateString();
 
-        
-            const textInputParent = document.getElementById('text-input-parent');
-            new TextInputControl(textInputParent, 'myTextInput', 'Nombre Usuario', 'Invitado',
-                (value) => { console.log("Text Input Value:", value); }
-            );
- 
-            const selectParent = document.getElementById('select-parent');
-            const options = [
-                { value: 'op1', text: 'Opción Uno' },
-                { value: 'op2', text: 'Opción Dos' },
-                { value: 'op3', text: 'Opción Tres' }
-            ];
-            new SelectControl(selectParent, 'mySelect', 'Elige una Opción', options, 'op2',
-                (value) => { console.log("Select Value:", value); }
-            );
+                    const currentDayDate = new Date(this.currentYear, this.currentMonth, day);
+                    const today = this.normalizeDate(new Date());
 
-            // Button
-            const buttonParent = document.getElementById('button-parent');
-            new ButtonControl(buttonParent, 'myButton', 'Guardar Configuración',
-                () => { console.log("Botón 'Guardar Configuración' clickeado!"); }
-            );
+                    if (currentDayDate.getTime() === this.selectedDate.getTime()) {
+                        dayElement.classList.add('selected');
+                    }
+                    if (currentDayDate.getTime() === today.getTime()) {
+                        dayElement.classList.add('today');
+                    }
 
-            new ButtonControl(buttonParent, 'myDangerButton', 'Eliminar Todo',
-                () => { alert("¡Cuidado! Acción peligrosa."); }, 'danger'
-            );
+                    dayElement.addEventListener('click', () => this.selectDate(day));
+                    this.elements.calendarGrid.appendChild(dayElement);
+                }
+            }
 
-          
-            const timePickerParent = document.getElementById('timepicker-parent');
-            new TimePickerControl(timePickerParent, 'myTimePicker', 'Hora del Evento', '14:30',
-                (time) => { console.log("Hora seleccionada:", time); }
-            );
- 
-            const rangeParent = document.getElementById('range-parent');
-            new RangeControl(rangeParent, 'myRangeSlider', 'Rango de Precios', 0, 1000, 200, 800, 10,
-                (range) => { console.log("Rango seleccionado:", range.value1, "-", range.value2); }
-            );
+            changeMonth(offset) {
+                this.currentMonth += offset;
+                if (this.currentMonth < 0) {
+                    this.currentMonth = 11;
+                    this.currentYear--;
+                } else if (this.currentMonth > 11) {
+                    this.currentMonth = 0;
+                    this.currentYear++;
+                }
+                this.renderCalendar();
+            }
 
-      
-            const colorPickerParent = document.getElementById('colorpicker-parent');
-            new ColorPickerControl(colorPickerParent, 'myColorPicker', 'Color Principal', '#ff4500',
-                (color) => { console.log("Color seleccionado:", color); }
-            );
+            selectDate(day) {
+                this.selectedDate = new Date(this.currentYear, this.currentMonth, day);
+                this.elements.displayInput.value = this.formatDate(this.selectedDate);
+                this.elements.calendarPopup.classList.remove('open');
+                this.changeCallback(this.selectedDate);
+                this.renderCalendar();  
+            }
 
-        
-             
+            formatDate(date) {
+                return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            }
+
+            normalizeDate(date) {
+              
+                const d = new Date(date);
+                d.setHours(0, 0, 0, 0);
+                return d;
+            }
+
+            getValue() {
+                return this.selectedDate;
+            }
+
+            setValue(newDate) {
+                this.selectedDate = this.normalizeDate(newDate);
+                this.currentMonth = this.selectedDate.getMonth();
+                this.currentYear = this.selectedDate.getFullYear();
+                this.elements.displayInput.value = this.formatDate(this.selectedDate);
+                this.renderCalendar();
+                this.changeCallback(this.selectedDate);
+            }
+        }
+
+       
+        class DateRangeControl {
+            constructor(htmlParent, idGenerico, labelText, initialStartDate = new Date(), initialEndDate = new Date(), changeCallback = () => {}) {
+                this.htmlParent = htmlParent;
+                this.idGenerico = idGenerico;
+                this.labelText = labelText;
+                this.startDate = this.normalizeDate(initialStartDate);
+                this.endDate = this.normalizeDate(initialEndDate);
+                this.currentMonth = this.startDate.getMonth();
+                this.currentYear = this.startDate.getFullYear();
+                this.changeCallback = changeCallback;
+                this.elements = {};
+                this.selectingStartDate = true; 
+                this.css();
+                this.createElements();
+                this.attachEventListeners();
+                this.renderCalendar();
+            }
+
+            css = () => {
+                if (!document.getElementById(`dateRangeControlCss`)) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = `dateRangeControlCss`;
+                    styleTag.textContent = `
+                        .date-range-control-container {
+                            margin-bottom: 15px;
+                            position: relative;
+                        }
+                        .date-range-control-label {
+                            color: #ffffff;
+                            font-size: 0.9rem;
+                            margin-bottom: 8px;
+                            display: block;
+                        }
+                        .date-range-display-inputs {
+                            display: flex;
+                            gap: 10px;
+                            margin-bottom: 5px;
+                        }
+                        .date-range-display-input {
+                            background: #313131;
+                            border: 1px solid #555;
+                            color: #ffffff;
+                            padding: 6px 10px;
+                            border-radius: 4px;
+                            width: 120px; /* Ajustar el ancho */
+                            font-size: 0.9rem;
+                            cursor: pointer;
+                            position: relative;
+                            z-index: 0;
+                        }
+                        .date-range-display-input.active-selection {
+                            border-color: #007bff;
+                            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+                        }
+                        .date-range-popup {
+                            position: absolute;
+                            background-color: #444;
+                            border: 1px solid #666;
+                            border-radius: 8px;
+                            padding: 15px;
+                            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                            z-index: 1000;
+                            display: none; 
+                            top: 100%; 
+                            left: 0;
+                            margin-top: 5px;
+                        }
+                        .date-range-popup.open {
+                            display: block;
+                        }
+                        .date-range-header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            margin-bottom: 10px;
+                        }
+                        .date-range-header button {
+                            background: #515151;
+                            border: 1px solid #666;
+                            color: #ffffff;
+                            padding: 5px 10px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                        }
+                        .date-range-header button:hover {
+                            background: #616161;
+                        }
+                        .date-range-title {
+                            color: #ffffff;
+                            font-weight: bold;
+                        }
+                        .date-range-grid {
+                            display: grid;
+                            grid-template-columns: repeat(7, 1fr);
+                            gap: 5px;
+                            text-align: center;
+                        }
+                        .date-range-day-header {
+                            color: #aaa;
+                            font-size: 0.8em;
+                        }
+                        .date-range-day {
+                            padding: 8px 5px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            transition: background-color 0.2s;
+                            font-size: 0.9em;
+                        }
+                        .date-range-day:hover:not(.empty):not(.disabled):not(.selected-start):not(.selected-end):not(.in-range) {
+                            background-color: #555;
+                        }
+                        .date-range-day.empty {
+                            visibility: hidden;
+                        }
+                        .date-range-day.current-month {
+                            color: #eee;
+                        }
+                        .date-range-day.other-month {
+                            color: #888;
+                        }
+                        .date-range-day.selected-start {
+                            background-color: #007bff;
+                            color: #fff;
+                            font-weight: bold;
+                            border-top-left-radius: 4px;
+                            border-bottom-left-radius: 4px;
+                            border-top-right-radius: 0;
+                            border-bottom-right-radius: 0;
+                        }
+                        .date-range-day.selected-end {
+                            background-color: #007bff;
+                            color: #fff;
+                            font-weight: bold;
+                            border-top-right-radius: 4px;
+                            border-bottom-right-radius: 4px;
+                            border-top-left-radius: 0;
+                            border-bottom-left-radius: 0;
+                        }
+                        .date-range-day.selected-start.selected-end { /* Si es el mismo día */
+                            border-radius: 4px;
+                        }
+                        .date-range-day.in-range {
+                            background-color: rgba(0, 123, 255, 0.3); /* Color semi-transparente para el rango */
+                            color: #eee;
+                            border-radius: 0;
+                        }
+                        .date-range-day.today {
+                            border: 1px solid #007bff;
+                        }
+                        .date-range-day.disabled {
+                            color: #666;
+                            cursor: not-allowed;
+                            background-color: #383838;
+                        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+            createElements() {
+                const container = document.createElement('div');
+                container.classList.add('date-range-control-container');
+                container.innerHTML = `
+                    <label class="date-range-control-label">${this.labelText}:</label>
+                    <div class="date-range-display-inputs">
+                        <input type="text" id="${this.idGenerico}-start-date-input" class="date-range-display-input" readonly value="${this.formatDate(this.startDate)}">
+                        <span>-</span>
+                        <input type="text" id="${this.idGenerico}-end-date-input" class="date-range-display-input" readonly value="${this.formatDate(this.endDate)}">
+                    </div>
+                    <div id="${this.idGenerico}-date-range-popup" class="date-range-popup">
+                        <div class="date-range-header">
+                            <button id="${this.idGenerico}-prev-month">&lt;</button>
+                            <span id="${this.idGenerico}-month-year" class="date-range-title"></span>
+                            <button id="${this.idGenerico}-next-month">&gt;</button>
+                        </div>
+                        <div class="date-range-grid">
+                            <div class="date-range-day-header">Dom</div>
+                            <div class="date-range-day-header">Lun</div>
+                            <div class="date-range-day-header">Mar</div>
+                            <div class="date-range-day-header">Mié</div>
+                            <div class="date-range-day-header">Jue</div>
+                            <div class="date-range-day-header">Vie</div>
+                            <div class="date-range-day-header">Sáb</div>
+                        </div>
+                    </div>
+                `;
+                this.htmlParent.appendChild(container);
+
+                this.elements.startDateInput = container.querySelector(`#${this.idGenerico}-start-date-input`);
+                this.elements.endDateInput = container.querySelector(`#${this.idGenerico}-end-date-input`);
+                this.elements.dateRangePopup = container.querySelector(`#${this.idGenerico}-date-range-popup`);
+                this.elements.prevMonthBtn = container.querySelector(`#${this.idGenerico}-prev-month`);
+                this.elements.nextMonthBtn = container.querySelector(`#${this.idGenerico}-next-month`);
+                this.elements.monthYearSpan = container.querySelector(`#${this.idGenerico}-month-year`);
+                this.elements.calendarGrid = container.querySelector(`.date-range-grid`);
+            }
+
+            attachEventListeners() {
+                this.elements.startDateInput.addEventListener('click', () => {
+                    this.selectingStartDate = true;
+                    this.elements.startDateInput.classList.add('active-selection');
+                    this.elements.endDateInput.classList.remove('active-selection');
+                    this.elements.dateRangePopup.classList.add('open');
+                    this.currentMonth = this.startDate.getMonth();
+                    this.currentYear = this.startDate.getFullYear();
+                    this.renderCalendar();
+                });
+
+                this.elements.endDateInput.addEventListener('click', () => {
+                    this.selectingStartDate = false;
+                    this.elements.endDateInput.classList.add('active-selection');
+                    this.elements.startDateInput.classList.remove('active-selection');
+                    this.elements.dateRangePopup.classList.add('open');
+                    this.currentMonth = this.endDate.getMonth();
+                    this.currentYear = this.endDate.getFullYear();
+                    this.renderCalendar();
+                });
+
+                this.elements.prevMonthBtn.addEventListener('click', () => {
+                    this.changeMonth(-1);
+                });
+
+                this.elements.nextMonthBtn.addEventListener('click', () => {
+                    this.changeMonth(1);
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (!this.htmlParent.contains(event.target)) {
+                        this.elements.dateRangePopup.classList.remove('open');
+                        this.elements.startDateInput.classList.remove('active-selection');
+                        this.elements.endDateInput.classList.remove('active-selection');
+                    }
+                });
+            }
+
+            renderCalendar() {
+                this.elements.calendarGrid.querySelectorAll('.date-range-day:not(.date-range-day-header)').forEach(day => day.remove());
+
+                const firstDayOfMonth = new Date(this.currentYear, this.currentMonth, 1);
+                const daysInMonth = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+                const startDay = firstDayOfMonth.getDay(); 
+
+                this.elements.monthYearSpan.textContent = `${firstDayOfMonth.toLocaleString('es-ES', { month: 'long' })} ${this.currentYear}`;
+
+                for (let i = 0; i < startDay; i++) {
+                    const emptyDay = document.createElement('div');
+                    emptyDay.classList.add('date-range-day', 'empty');
+                    this.elements.calendarGrid.appendChild(emptyDay);
+                }
+
+                const today = this.normalizeDate(new Date());
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('date-range-day', 'current-month');
+                    dayElement.textContent = day;
+                    const currentDayDate = new Date(this.currentYear, this.currentMonth, day);
+
+                    if (currentDayDate.getTime() === today.getTime()) {
+                        dayElement.classList.add('today');
+                    }
+                    
+                    if (currentDayDate.getTime() === this.startDate.getTime() && currentDayDate.getTime() === this.endDate.getTime()) {
+                        dayElement.classList.add('selected-start', 'selected-end');
+                    } else if (currentDayDate.getTime() === this.startDate.getTime()) {
+                        dayElement.classList.add('selected-start');
+                    } else if (currentDayDate.getTime() === this.endDate.getTime()) {
+                        dayElement.classList.add('selected-end');
+                    } else if (currentDayDate > this.startDate && currentDayDate < this.endDate) {
+                        dayElement.classList.add('in-range');
+                    }
+
+                    dayElement.addEventListener('click', () => this.selectDate(day));
+                    this.elements.calendarGrid.appendChild(dayElement);
+                }
+            }
+
+            changeMonth(offset) {
+                this.currentMonth += offset;
+                if (this.currentMonth < 0) {
+                    this.currentMonth = 11;
+                    this.currentYear--;
+                } else if (this.currentMonth > 11) {
+                    this.currentMonth = 0;
+                    this.currentYear++;
+                }
+                this.renderCalendar();
+            }
+
+            selectDate(day) {
+                const newDate = this.normalizeDate(new Date(this.currentYear, this.currentMonth, day));
+
+                if (this.selectingStartDate) {
+                    this.startDate = newDate;
+                    if (this.startDate > this.endDate) {  
+                        this.endDate = this.startDate;
+                    }
+                    this.elements.startDateInput.value = this.formatDate(this.startDate);
            
-          
-            const dateRangeParent = document.getElementById('date-range-parent');
-            const today = new Date();
-            const nextWeek = new Date();
-            nextWeek.setDate(today.getDate() + 7);
-            new DateRangeControl(dateRangeParent, 'myDateRange', 'Selecciona un Rango', today, nextWeek,
-                (range) => { console.log("Rango de fechas seleccionado:", range.startDate.toLocaleDateString(), "-", range.endDate.toLocaleDateString()); }
-            );
+                    this.selectingStartDate = false;
+                    this.elements.startDateInput.classList.remove('active-selection');
+                    this.elements.endDateInput.classList.add('active-selection');
+                } else {
+                    this.endDate = newDate;
+                    if (this.endDate < this.startDate) { 
+                        this.startDate = this.endDate;
+                    }
+                    this.elements.endDateInput.value = this.formatDate(this.endDate);
+              
+                    this.elements.dateRangePopup.classList.remove('open');
+                    this.elements.endDateInput.classList.remove('active-selection');
+                    this.selectingStartDate = true; 
+                }
+                this.renderCalendar();  
+                this.changeCallback({ startDate: this.startDate, endDate: this.endDate });
+            }
 
-           let box= new BoxDiv(document.getElementById("controls-container"));
-      
-           let bt=new BtCircle(box.contentWrapper,"circle","texto bt",()=>{alert("clic boton");});
-             new CalendarControl(box.contentWrapper, 'myCalendar', 'Selecciona una Fecha', new Date(),
-                (date) => { console.log("Fecha seleccionada:", date.toLocaleDateString()); }
-            );
+            formatDate(date) {
+                if (!date) return '';  
+                return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            }
 
-              new Slider18Nov2025(box.contentWrapper, 'myFancySlider2', 0, 200, 75, 0.01, 'Volumen2',
-                (value) => { console.log("Slider Value2:", value); },
-                (isChecked) => { console.log("Slider Checkbox State:2", isChecked); },
-                true 
-            );
+            normalizeDate(date) {
+                const d = new Date(date);
+                d.setHours(0, 0, 0, 0);
+                return d;
+            }
 
-            JsTools.cssScroll();
-         
+            getValue() {
+                return { startDate: this.startDate, endDate: this.endDate };
+            }
+
+            setValue(newStartDate, newEndDate) {
+                this.startDate = this.normalizeDate(newStartDate);
+                this.endDate = this.normalizeDate(newEndDate);
+     
+                if (this.startDate > this.endDate) {
+                    [this.startDate, this.endDate] = [this.endDate, this.startDate];
+                }
+                this.currentMonth = this.startDate.getMonth();
+                this.currentYear = this.startDate.getFullYear();
+                this.elements.startDateInput.value = this.formatDate(this.startDate);
+                this.elements.endDateInput.value = this.formatDate(this.endDate);
+                this.renderCalendar();
+                this.changeCallback(this.getValue());
+            }
+        }
+
+
+
+        class HexagonalButton {
+    constructor(htmlParent, idGenerico, buttonText, clickCallback = () => {}) {
+        this.htmlParent = htmlParent;
+        this.idGenerico = idGenerico;
+        this.buttonText = buttonText;
+        this.clickCallback = clickCallback;
+        this.elements = {};
+
+        this.css();
+        this.createElements();
+        this.attachEventListeners();
+    }
+
+    css = () => {
+        if (!document.getElementById(`hexagonalButtonCss30dic2025`)) {
+            const styleTag = document.createElement('style');
+            styleTag.id = `hexagonalButtonCss30dic2025`;
+            styleTag.textContent = `
+                .hexagonal-button-container {
+                    margin-bottom: 15px;
+                    display: inline-block;
+                }
+                
+                .hexagonal-button {
+                    position: relative;
+                    width: 80px;
+                    height: 70px;
+                    background: #007bff;
+                    color: #ffffff;
+                    border: none;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    font-weight: bold;
+                    text-align: center;
+                    transition: all 0.3s ease;
+                    clip-path: polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%);
+                }
+                
+                .hexagonal-button:hover {
+                    background: #0056b3;
+                    transform: scale(1.05);
+                }
+                
+                .hexagonal-button:active {
+                    transform: scale(0.95);
+                }
+                
+                .hexagonal-button.danger {
+                    background: #dc3545;
+                }
+                
+                .hexagonal-button.danger:hover {
+                    background: #bd2130;
+                }
+                
+                .hexagonal-button.success {
+                    background: #28a745;
+                }
+                
+                .hexagonal-button.success:hover {
+                    background: #218838;
+                }
+                
+                .hexagonal-button.warning {
+                    background: #ffc107;
+                    color: #212529;
+                }
+                
+                .hexagonal-button.warning:hover {
+                    background: #e0a800;
+                }
+            `;
+            document.head.appendChild(styleTag);
+        }
+    }
+
+    createElements() {
+        const container = document.createElement('div');
+        container.classList.add('hexagonal-button-container');
+        container.innerHTML = `
+            <button id="${this.idGenerico}-hexbutton" class="hexagonal-button">${this.buttonText}</button>
+        `;
+        this.htmlParent.appendChild(container);
+        this.elements.button = container.querySelector(`#${this.idGenerico}-hexbutton`);
+    }
+
+    attachEventListeners() {
+        this.elements.button.addEventListener('click', () => {
+            this.clickCallback();
         });
-    </script>
+    }
 
-</body>
-</html>
+    setStyle(className) {
+        this.elements.button.className = 'hexagonal-button ' + className;
+    }
+}
