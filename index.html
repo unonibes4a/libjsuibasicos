@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+ <script src="https://unonibes4a.github.io/libjsuibasicos/libsimple.js"></script> 
+  <!--    <script src="libsimple.js"></script> -->
+    <title>Controles de Formulario Personalizados (JS CSS)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: #eee;
+            padding: 20px;
+        }
+
+        .control-section {
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-section h2 {
+            color: #fff;
+            margin-top: 0;
+            border-bottom: 1px solid #555;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            height: auto;
+          
+        }
+        
+
+      
+    
+    </style>
+</head>
+<body>
+
+    <h1>Controles Personalizados</h1>
+
+    <div id="controls-container">
+        <div class="control-section">
+            <h2>Slider Control</h2>        
+            <div id="slider-parent"></div>
+        </div>
+
+        <div class="control-section">
+            <h2>Checkbox Control</h2>
+            <div id="checkbox-parent"></div>
+        </div>
+
+        <div class="control-section">    
+            <h2>Number Input Control</h2>
+            <div id="number-input-parent"></div>
+        </div>
+
+        <div class="control-section">
+            <h2>Text Input Control</h2>
+            <div id="text-input-parent"></div>
+        </div>
+
+        <div class="control-section">
+            <h2>Select Control</h2>
+            <div id="select-parent"></div>
+        </div>
+
+        <div class="control-section">
+            <h2>Button Control</h2>
+            <div id="button-parent"></div>
+        </div>
+
+        <div class="control-section">
+            <h2>Time Picker Control</h2>
+            <div id="timepicker-parent"></div>
+        </div>
+
+        <div class="control-section">
+            <h2>Range Control (Doble Slider)</h2>
+            <div id="range-parent"></div>
+        </div>
+
+        <div class="control-section">
+            <h2>Color Picker Control</h2>
+            <div id="colorpicker-parent"></div>
+        </div>
+
+     
+        <div class="control-section">
+            <h2>Calendar Control (Fecha Única)</h2>
+            <div id="calendar-parent"></div>
+        </div>
+
+        <div class="control-section">
+            <h2>Date Range Control (Rango de Fechas)</h2>
+            <div id="date-range-parent"></div>
+        </div>
+    </div>
+
+    <script> 
+ 
+document.addEventListener('DOMContentLoaded', () => {
+    const buttonParent = document.getElementById('button-parent');
+    
+    // Botón hexagonal normal
+    new HexagonalButton(buttonParent, 'hexBtn1', 'Guardar', 
+        () => { console.log('Botón Guardar clickeado'); }
+    );
+    
+    // Botón hexagonal de peligro
+    const dangerBtn = new HexagonalButton(buttonParent, 'hexBtn2', 'Eliminar', 
+        () => { alert('¡Acción peligrosa!'); }
+    );
+    dangerBtn.setStyle('danger');
+    
+    // Botón hexagonal de éxito
+    const successBtn = new HexagonalButton(buttonParent, 'hexBtn3', 'Confirmar', 
+        () => { console.log('Confirmado'); }
+    );
+    successBtn.setStyle('success');
+    
+    // Botón hexagonal de advertencia
+    const warningBtn = new HexagonalButton(buttonParent, 'hexBtn4', 'Advertir', 
+        () => { console.log('Advertencia'); }
+    );
+    warningBtn.setStyle('warning');
+});
+
+
+     
+        document.addEventListener('DOMContentLoaded', () => {
+          
+            const sliderParent = document.getElementById('slider-parent');
+            new Slider18Nov2025(sliderParent, 'myFancySlider', 0, 200, 75, 0.01, 'Volumen',
+                (value) => { console.log("Slider Value:", value); },
+                (isChecked) => { console.log("Slider Checkbox State:", isChecked); },
+                true 
+            );
+
+ 
+            const checkboxParent = document.getElementById('checkbox-parent');
+            new CheckboxControl(checkboxParent, 'myCheckbox', 'Habilitar Característica', true,
+                (isChecked) => { console.log("Checkbox 'Habilitar Característica':", isChecked); }
+            );
+
+         
+            const numberInputParent = document.getElementById('number-input-parent');
+            new NumberInputControl(numberInputParent, 'myNumberInput', 'Cantidad', 10, 0.5, 0, 100,
+                (value) => { console.log("Number Input Value:", value); }
+            );
+
+        
+            const textInputParent = document.getElementById('text-input-parent');
+            new TextInputControl(textInputParent, 'myTextInput', 'Nombre Usuario', 'Invitado',
+                (value) => { console.log("Text Input Value:", value); }
+            );
+ 
+            const selectParent = document.getElementById('select-parent');
+            const options = [
+                { value: 'op1', text: 'Opción Uno' },
+                { value: 'op2', text: 'Opción Dos' },
+                { value: 'op3', text: 'Opción Tres' }
+            ];
+            new SelectControl(selectParent, 'mySelect', 'Elige una Opción', options, 'op2',
+                (value) => { console.log("Select Value:", value); }
+            );
+
+            // Button
+            const buttonParent = document.getElementById('button-parent');
+            new ButtonControl(buttonParent, 'myButton', 'Guardar Configuración',
+                () => { console.log("Botón 'Guardar Configuración' clickeado!"); }
+            );
+
+            new ButtonControl(buttonParent, 'myDangerButton', 'Eliminar Todo',
+                () => { alert("¡Cuidado! Acción peligrosa."); }, 'danger'
+            );
+
+          
+            const timePickerParent = document.getElementById('timepicker-parent');
+            new TimePickerControl(timePickerParent, 'myTimePicker', 'Hora del Evento', '14:30',
+                (time) => { console.log("Hora seleccionada:", time); }
+            );
+ 
+            const rangeParent = document.getElementById('range-parent');
+            new RangeControl(rangeParent, 'myRangeSlider', 'Rango de Precios', 0, 1000, 200, 800, 10,
+                (range) => { console.log("Rango seleccionado:", range.value1, "-", range.value2); }
+            );
+
+      
+            const colorPickerParent = document.getElementById('colorpicker-parent');
+            new ColorPickerControl(colorPickerParent, 'myColorPicker', 'Color Principal', '#ff4500',
+                (color) => { console.log("Color seleccionado:", color); }
+            );
+
+        
+             
+           
+          
+            const dateRangeParent = document.getElementById('date-range-parent');
+            const today = new Date();
+            const nextWeek = new Date();
+            nextWeek.setDate(today.getDate() + 7);
+            new DateRangeControl(dateRangeParent, 'myDateRange', 'Selecciona un Rango', today, nextWeek,
+                (range) => { console.log("Rango de fechas seleccionado:", range.startDate.toLocaleDateString(), "-", range.endDate.toLocaleDateString()); }
+            );
+
+           let box= new BoxDiv(document.getElementById("controls-container"));
+      
+           let bt=new BtCircle(box.contentWrapper,"circle","texto bt",()=>{alert("clic boton");});
+             new CalendarControl(box.contentWrapper, 'myCalendar', 'Selecciona una Fecha', new Date(),
+                (date) => { console.log("Fecha seleccionada:", date.toLocaleDateString()); }
+            );
+
+              new Slider18Nov2025(box.contentWrapper, 'myFancySlider2', 0, 200, 75, 0.01, 'Volumen2',
+                (value) => { console.log("Slider Value2:", value); },
+                (isChecked) => { console.log("Slider Checkbox State:2", isChecked); },
+                true 
+            );
+
+            JsTools.cssScroll();
+         
+        });
+    </script>
+
+</body>
+</html>
