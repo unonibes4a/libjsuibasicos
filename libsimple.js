@@ -1,5 +1,675 @@
  
-        class JsTools {
+       
+       
+       
+       
+
+class GioAudioTeclaDic302025 {
+  constructor(htmlParent, idGenerico) {
+    this.css();
+    this.htmlParent = htmlParent;
+    this.idGenerico = idGenerico;
+    this.booladdEventListener=false;
+    
+ 
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AudioContext();
+    
+ 
+    this.masterGain = this.ctx.createGain();
+    this.filter = this.ctx.createBiquadFilter();
+    this.distortion = this.ctx.createWaveShaper();
+    this.distGain = this.ctx.createGain();
+    this.delayNode = this.ctx.createDelay();
+    this.delayFeedback = this.ctx.createGain();
+    this.delayWet = this.ctx.createGain();
+    this.reverbNode = this.ctx.createConvolver();
+    this.reverbWet = this.ctx.createGain();
+    this.trackInput = this.ctx.createGain();
+    
+    
+    this.filterBypass = this.ctx.createGain();
+    this.distortionBypass = this.ctx.createGain();
+    
+     
+    this.masterGain.gain.value = 0.5;
+    this.filter.type = 'lowpass';
+    this.filter.frequency.value = 2000;
+    this.filter.Q.value = 14;
+    this.distGain.gain.value = 1;
+    this.distortion.curve = this.makeDistortionCurve(0);
+    this.delayNode.delayTime.value = 0.3;
+    this.delayFeedback.gain.value = 0.4;
+    this.delayWet.gain.value = 0.04;
+    this.reverbWet.gain.value = 1.0;
+    this.reverbNode.buffer = this.impulseResponse(2, 2);
+    
+ 
+    this.filterEnabled = true;
+    this.distortionEnabled = true;
+    this.delayEnabled = true;
+    this.reverbEnabled = true;
+    
+   
+    this.setupAudioChain();
+    
+ 
+    this.audioBuffer = null;
+    
+   
+    this.activeVoices = new Map();  
+    this.keysPressed = new Set();  
+    
+    this.tuneValue = 0;
+    this.tracks = [];
+    this.trackIdCounter = 0;
+    
+ 
+    this.sliders = {};
+    
+    
+    this.init();
+  }
+  
+  setupAudioChain() {
+  
+    this.trackInput.connect(this.distortion);
+    this.distortion.connect(this.distGain);
+    this.distGain.connect(this.filter);
+    
+   
+    this.filter.connect(this.masterGain);
+    this.filter.connect(this.delayNode);
+    this.filter.connect(this.reverbNode);
+    
+     
+    this.delayNode.connect(this.delayFeedback);
+    this.delayFeedback.connect(this.delayNode);
+    this.delayNode.connect(this.delayWet);
+    this.delayWet.connect(this.masterGain);
+    
+   
+    this.reverbNode.connect(this.reverbWet);
+    this.reverbWet.connect(this.masterGain);
+    
+    this.masterGain.connect(this.ctx.destination);
+  }
+  
+  init() {
+    this.createHTML();
+    this.createSliders();
+    this.attachEventListeners();
+  }
+  texto=(s)=>{
+   JsTools.createMessage(s);
+  }
+   css = () => {
+    JsTools.cssScroll();
+                if (!document.getElementById("tracksimpl302025div30dic")) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = "tracksimpl302025div30dic";
+                    styleTag.textContent = `
+                      .audio-synth-container {
+                    position:relative;
+                    left:0px;
+                    top:0px;        
+                    height:100%;
+                    width:100%;
+                    font-family: Arial, sans-serif;
+                    max-width: 300px;
+                     max-height: 300px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background: #1a1a1a85;
+                    color: white;
+                    display: flex;
+                    justify-content: flex-start;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    padding-top: 0;
+                    padding-bottom: 0;
+                    overflow:hidden;
+        }
+
+          
+        .sectionz {
+                position:relative;
+                left:0px;
+                top:0px;        
+                height:80%;
+                width:100%;
+                background: #2a2a2a;
+                padding: 15px;
+                margin: 15px 0;
+                border-radius: 8px;
+                display: flex;
+                justify-content: flex-start;
+                gap: 10px;
+                flex-wrap: wrap;
+                padding-top: 0;
+                padding-bottom: 0;
+ 
+
+        }
+
+        .labelinput30d2025 { 
+        position:relative;
+                left:0px;
+                top:0px;        
+                  width:47px;
+            height:47px;
+            background-color: #353535;
+            color: #c7c7c7;
+            cursor: pointer;
+
+            font-size: 10px;
+            border-radius: 50%;
+            transition: all 0.2s ease-in-out;  
+            display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	align-content: center; 
+        }
+
+      .labelinput30d2025:hover {
+         background-color: #313131;
+            color: #ffffff;
+        }
+                      
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+        
+  
+  createHTML() {
+    this.htmlParent.innerHTML = `
+      <div class="audio-synth-container">        
+        <div class="sectionz"  >
+             <label  for="${this.idGenerico}-audio-file"  id="app" class="labelinput30d2025"  >open </label>
+
+         <input type="file" id="${this.idGenerico}-audio-file" accept="audio/*" style="display: none;">
+        </div>
+        
+        <div class="sectionz" style=" display: none;">
+          <h3>Teclado</h3>
+          <div id="${this.idGenerico}-piano-keys-container"></div>
+          <div class="sectionz">
+          <h3>Multi-Track</h3>
+          <button id="${this.idGenerico}-add-track-btn" class="add-track-btn">+ Agregar Pista</button>
+          <div id="${this.idGenerico}-tracks-container" class="tracks-container"></div>
+        </div>
+        </div>
+        
+        
+        
+         
+      </div>
+      
+    `;
+    
+   
+    let keysContainer = document.getElementById(`${this.idGenerico}-piano-keys-container`);
+    this.box = new BoxDiv(keysContainer);
+    this.boxslider = new BoxDiv(keysContainer);
+    
+     
+    const keys = ['A'];/* ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K']; */
+    const notes = [0 ];/* [0, 2, 4, 5, 7, 9, 11, 12]; // C D E F G A B C (octava) */
+    
+    keys.forEach((key, index) => {
+      let bt = new BtCircle(this.box.contentWrapper, `${this.idGenerico}-key-${key}`, key, null);
+      this.pressKey(bt.label, notes[index], key);
+      
+ 
+      bt.label.dataset.keyId = key;
+    });
+  }
+  
+  createSliders() {
+    this.sliders.volume = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-volume`,
+      0, 2, 0.5, 0.01,
+      "Volumen Master",
+      (val) => {
+        this.masterGain.gain.value = parseFloat(val);
+      },
+      null,
+      true
+    );
+    
+    this.sliders.tune = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-tune`,
+      -24, 24, 0, 1,
+      "Afinación (semitonos)",
+      (val) => {
+        this.tuneValue = parseInt(val);
+      },
+      null,
+      true
+    );
+    
+    this.sliders.filterFreq = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-filter-freq`,
+      20, 20000, 2000, 1,
+      "Frecuencia",
+      (val) => {
+        this.filter.frequency.value = parseFloat(val);
+      },
+      (isChecked) => {
+        this.filterEnabled = isChecked;
+        this.updateFilterBypass();
+      },
+      true
+    );
+    
+    this.sliders.filterQ = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-filter-q`,
+      0, 30, 14, 0.1,
+      "Resonancia",
+      (val) => {
+        this.filter.Q.value = parseFloat(val);
+      },
+      null,
+      true
+    );
+    
+    this.sliders.distAmount = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-dist-amount`,
+      0, 100, 0, 1,
+      "dist-amount",
+      (val) => {
+        this.distortion.curve = this.makeDistortionCurve(parseInt(val));
+      },
+      (isChecked) => {
+        this.distortionEnabled = isChecked;
+        this.updateDistortionBypass();
+      },
+      true
+    );
+    
+    this.sliders.distGain = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-dist-gain`,
+      0, 5, 1, 0.01,
+      "Dist-gain",
+      (val) => {
+        this.distGain.gain.value = parseFloat(val);
+      },
+      null,
+      true
+    );
+    
+    this.sliders.delayTime = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-delay-time`,
+      0, 2, 0.3, 0.01,
+      "DelayTiempo",
+      (val) => {
+        this.delayNode.delayTime.value = parseFloat(val);
+      },
+      (isChecked) => {
+        this.delayEnabled = isChecked;
+        this.delayWet.gain.value = isChecked ? this.sliders.delayMix.getValue() : 0;
+      },
+      true
+    );
+    
+    this.sliders.delayFeedback = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-delay-fb`,
+      0, 0.95, 0.4, 0.01,
+      "DelayFeedback",
+      (val) => {
+        this.delayFeedback.gain.value = parseFloat(val);
+      },
+      null,
+      true
+    );
+    
+    this.sliders.delayMix = new Slider18Nov2025( 
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-delay-mix`,
+      0, 1, 0.04, 0.01,
+      "Delay-mix",
+      (val) => {
+        if (this.delayEnabled) {
+          this.delayWet.gain.value = parseFloat(val);
+        }
+      },
+      null,
+      true
+    );
+    
+    this.sliders.reverbDecay = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-reverb-decay`,
+      0.1, 100, 20, 0.1,
+      "Reverb-decay",
+      (val) => {
+        const v = parseFloat(val);
+        this.reverbNode.buffer = this.impulseResponse(v, v);
+      },
+      (isChecked) => {
+        this.reverbEnabled = isChecked;
+        this.reverbWet.gain.value = isChecked ? this.sliders.reverbMix.getValue() : 0;
+      },
+      true
+    );
+    
+    this.sliders.reverbMix = new Slider18Nov2025(
+      this.boxslider.contentWrapper,
+      `${this.idGenerico}-reverb-mix`,
+      0, 2, 1, 0.01,
+      "Reverb-mix",
+      (val) => {
+        if (this.reverbEnabled) {
+          this.reverbWet.gain.value = parseFloat(val);
+        }
+      },
+      null,
+      true
+    );
+  }
+  
+  updateFilterBypass() {
+    if (!this.filterEnabled) {
+      this.filter.frequency.value = 20000;  
+    } else {
+      this.filter.frequency.value = this.sliders.filterFreq.getValue();
+    }
+  }
+  
+  updateDistortionBypass() {
+    if (!this.distortionEnabled) {
+      this.distortion.curve = this.makeDistortionCurve(0);
+    } else {
+      this.distortion.curve = this.makeDistortionCurve(this.sliders.distAmount.getValue());
+    }
+  }
+  
+  pressKey(keyElement, semitoneOffset = 0, keyId = '') {
+    keyElement.addEventListener('mousedown', () => this.playNote(semitoneOffset, keyId));
+    keyElement.addEventListener('mouseup', () => this.stopNote(keyId));
+    keyElement.addEventListener('touchstart', (e) => { 
+      e.preventDefault(); 
+      this.playNote(semitoneOffset, keyId); 
+    });
+    keyElement.addEventListener('touchend', (e) => { 
+      e.preventDefault(); 
+      this.stopNote(keyId); 
+    });
+  }
+  
+  attachEventListeners() { 
+    document.getElementById(`${this.idGenerico}-audio-file`).addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        if (this.ctx.state === 'suspended') await this.ctx.resume();
+        const arrayBuffer = await file.arrayBuffer();
+        this.audioBuffer = await this.ctx.decodeAudioData(arrayBuffer);
+        this.texto(file.name);
+       
+      } catch (error) {
+       
+      }
+    }); 
+ 
+    document.addEventListener('keydown', (e) => {
+        if(this.booladdEventListener){
+           if (e.repeat) return;        
+      const key = e.key.toLowerCase();
+      const keyMap = { 
+        'a': 0, 's': 2, 'd': 4, 'f': 5,
+        'g': 7, 'h': 9, 'j': 11, 'k': 12
+      };      
+      if (keyMap.hasOwnProperty(key)) { 
+        if (!this.keysPressed.has(key)) {
+          this.keysPressed.add(key);
+          this.playNote(keyMap[key], key);      
+          const btn = document.querySelector(`[data-key-id="${key.toUpperCase()}"]`);
+          if (btn) btn.classList.add('active');
+        }
+      }  
+        }
+      
+    });
+    
+    document.addEventListener('keyup', (e) => {
+        if(this.booladdEventListener){ const key = e.key.toLowerCase();
+      const keyMap = { 
+        'a': 0, 's': 2, 'd': 4, 'f': 5,
+        'g': 7, 'h': 9, 'j': 11, 'k': 12
+      };      
+      if (keyMap.hasOwnProperty(key)) {
+        this.keysPressed.delete(key);
+        this.stopNote(key);       
+
+        const btn = document.querySelector(`[data-key-id="${key.toUpperCase()}"]`);
+        if (btn) btn.classList.remove('active');
+      }}
+      
+    });    
+ 
+    document.getElementById(`${this.idGenerico}-add-track-btn`).addEventListener('click', () => {
+      this.addTrack();
+    });
+  }
+  
+  makeDistortionCurve(amount) {
+    const k = amount;
+    const n_samples = 44100;
+    const curve = new Float32Array(n_samples);
+    const deg = Math.PI / 180;
+    for (let i = 0; i < n_samples; ++i) {
+      const x = i * 2 / n_samples - 1;
+      curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+    }
+    return curve;
+  }
+  
+  impulseResponse(duration, decay) {
+    const sampleRate = this.ctx.sampleRate;
+    const length = sampleRate * duration;
+    const impulse = this.ctx.createBuffer(2, length, sampleRate);
+    const left = impulse.getChannelData(0);
+    const right = impulse.getChannelData(1);
+    for (let i = 0; i < length; i++) {
+      const val = Math.pow(1 - i / length, decay);
+      left[i] = (Math.random() * 2 - 1) * val;
+      right[i] = (Math.random() * 2 - 1) * val;
+    }
+    return impulse;
+  }
+  
+  // **NUEVO: playNote con sistema de voces múltiples**
+  playNote(semitoneOffset = 0, keyId = '') {
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+    
+    // Si esta nota ya está sonando, no hacer nada
+    if (this.activeVoices.has(keyId)) return;
+    
+    const voice = {
+      env: this.ctx.createGain(),
+      source: null,
+      trackVoices: []
+    };
+    
+    voice.env.connect(this.trackInput);
+    
+    const now = this.ctx.currentTime;
+    voice.env.gain.setValueAtTime(0, now);
+    voice.env.gain.linearRampToValueAtTime(0.3, now + 0.01); // Reducido a 0.3 para evitar saturación
+    
+    const totalSemitones = this.tuneValue + semitoneOffset;
+    
+    if (this.audioBuffer) {
+      voice.source = this.ctx.createBufferSource();
+      voice.source.buffer = this.audioBuffer;
+      voice.source.loop = true;
+      voice.source.playbackRate.value = Math.pow(2, totalSemitones / 12);
+    } else {
+      voice.source = this.ctx.createOscillator();
+      voice.source.type = 'sawtooth';
+      voice.source.frequency.value = 261.63 * Math.pow(2, totalSemitones / 12);
+    }
+    
+    voice.source.connect(voice.env);
+    voice.source.start(0);
+    
+    // Tocar en todas las pistas
+    this.tracks.forEach(track => {
+      const trackEnv = this.ctx.createGain();
+      trackEnv.connect(track.gainNode);
+      trackEnv.gain.setValueAtTime(0, now);
+      trackEnv.gain.linearRampToValueAtTime(0.3, now + 0.01);
+      
+      let trackSrc;
+      if (this.audioBuffer) {
+        trackSrc = this.ctx.createBufferSource();
+        trackSrc.buffer = this.audioBuffer;
+        trackSrc.loop = true;
+        trackSrc.playbackRate.value = Math.pow(2, totalSemitones / 12) * track.pitch;
+      } else {
+        trackSrc = this.ctx.createOscillator();
+        trackSrc.type = 'sawtooth';
+        trackSrc.frequency.value = 261.63 * Math.pow(2, totalSemitones / 12) * track.pitch;
+      }
+      
+      trackSrc.connect(trackEnv);
+      trackSrc.start(0);
+      
+      voice.trackVoices.push({
+        source: trackSrc,
+        env: trackEnv
+      });
+    });
+    
+    // Guardar la voz activa
+    this.activeVoices.set(keyId, voice);
+  }
+  
+  // **NUEVO: stopNote para voz específica**
+  stopNote(keyId = '') {
+    const voice = this.activeVoices.get(keyId);
+    if (!voice) return;
+    
+    const now = this.ctx.currentTime;
+    
+    // Fade out del envelope principal
+    voice.env.gain.cancelScheduledValues(now);
+    voice.env.gain.setValueAtTime(voice.env.gain.value, now);
+    voice.env.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+    
+    voice.source.stop(now + 0.1);
+    
+    // Fade out de las voces de las pistas
+    voice.trackVoices.forEach(trackVoice => {
+      trackVoice.env.gain.cancelScheduledValues(now);
+      trackVoice.env.gain.setValueAtTime(trackVoice.env.gain.value, now);
+      trackVoice.env.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+      trackVoice.source.stop(now + 0.1);
+    });
+    
+    // Limpiar después del fade out
+    setTimeout(() => {
+      try {
+        voice.source.disconnect();
+        voice.env.disconnect();
+        voice.trackVoices.forEach(tv => {
+          tv.source.disconnect();
+          tv.env.disconnect();
+        });
+      } catch(e){}
+      
+      this.activeVoices.delete(keyId);
+    }, 150);
+  }
+  
+  addTrack() {
+    const trackId = this.trackIdCounter++;
+    const track = {
+      id: trackId,
+      volume: 1,
+      pitch: 1,
+      gainNode: this.ctx.createGain(),
+      sliders: {}
+    };
+    
+    track.gainNode.gain.value = 1;
+    track.gainNode.connect(this.trackInput);
+    
+    this.tracks.push(track);
+    
+    const trackDiv = document.createElement('div');
+    trackDiv.className = 'track-item';
+    trackDiv.id = `${this.idGenerico}-track-${trackId}`;
+    trackDiv.innerHTML = `
+      <div class="track-header">
+        <h4>Pista ${trackId + 1}</h4>
+        <button class="remove-track-btn" data-track-id="${trackId}">✕ Eliminar</button>
+      </div>
+      <div id="${this.idGenerico}-track-vol-${trackId}"></div>
+      <div id="${this.idGenerico}-track-pitch-${trackId}"></div>
+    `;
+    
+    document.getElementById(`${this.idGenerico}-tracks-container`).appendChild(trackDiv);
+    
+    // Crear sliders para la pista
+    track.sliders.volume = new Slider18Nov2025(
+      document.getElementById(`${this.idGenerico}-track-vol-${trackId}`),
+      `${this.idGenerico}-trackvol-${trackId}`,
+      0, 2, 1, 0.01,
+      "Volumen",
+      (val) => {
+        track.volume = parseFloat(val);
+        track.gainNode.gain.value = track.volume;
+      },
+      null,
+      true
+    );
+    
+    track.sliders.pitch = new Slider18Nov2025(
+      document.getElementById(`${this.idGenerico}-track-pitch-${trackId}`),
+      `${this.idGenerico}-trackpitch-${trackId}`,
+      0.01, 7, 1, 0.01,
+      "Pitch",
+      (val) => {
+        track.pitch = parseFloat(val);
+      },
+      null,
+      true
+    );
+    
+    
+    trackDiv.querySelector('.remove-track-btn').addEventListener('click', () => {
+      this.removeTrack(trackId);
+    });
+  }
+  
+  removeTrack(trackId) {
+    const index = this.tracks.findIndex(t => t.id === trackId);
+    if (index === -1) return;
+    
+    const track = this.tracks[index];
+    track.gainNode.disconnect();
+    this.tracks.splice(index, 1);
+    
+    document.getElementById(`${this.idGenerico}-track-${trackId}`).remove();
+  }
+}
+       
+       
+       
+       class JsTools {
             static cssScroll = () => {
                 if (!document.getElementById("scrool302025dic")) {
                     const styleTag = document.createElement('style');
