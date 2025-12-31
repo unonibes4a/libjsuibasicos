@@ -277,11 +277,7 @@ class BoxDiv {
         this.container.appendChild(this.contentWrapper);
 
         this.contentWrapper.innerHTML = `
-            <div class="flex-itemdic202530">Elemento A</div>
-            <div class="flex-itemdic202530">Elemento B</div>
-            <div class="flex-itemdic202530">Elemento C</div>
-            <div class="flex-itemdic202530">Otro elemento</div>
-            <div class="flex-itemdic202530">Un último elemento</div>
+             
         `;
 
         this.updateToggleState();
