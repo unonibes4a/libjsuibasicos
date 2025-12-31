@@ -11,6 +11,8 @@
         ::-webkit-scrollbar-thumb { background: #454545; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555555; }
         * { scrollbar-width: thin; scrollbar-color: #454545 #333333; }
+       html{position:relative left:0%; top:0%; width: 100%;  height:  100%;}
+       body{position:relative left:0%; top:0%; width: 100%;  height:  100%;} 
             `;
             document.head.appendChild(styleTag);
         }
@@ -402,11 +404,11 @@ class BoxDiv {
 }
 
  
-        class BoxDiv2{
+        class BoxDiv250px{
              constructor(parentHtml=document.body  ){
                  this.css();
                  this.container = document.createElement('div');
-                 this.container .classList.add('control-section30idc2025');                
+                 this.container .classList.add('control2-section30idc2025');                
                  this.container .innerHTML = ` `;
                 parentHtml.appendChild( this.container );
             }
@@ -414,12 +416,13 @@ class BoxDiv {
                 if (!document.getElementById("boxdivcriclecss30dic")) {
                     const styleTag = document.createElement('style');
                     styleTag.id = "boxdivcriclecss30dic";
-                    styleTag.textContent = `   .control-section30idc2025 {
+                    styleTag.textContent = `   .control2-section30idc2025 {
             background-color: #333;
             border: 1px solid #555;
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 20px;
+        width
         }
                     `;
                     document.head.appendChild(styleTag);
