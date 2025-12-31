@@ -4,7 +4,7 @@
        
        
 
-class GioAudioTeclaDic302025 {
+class GioAudioTeclaDic302025no {
   constructor(htmlParent, idGenerico) {
     this.css();
     this.htmlParent = htmlParent;
@@ -3013,3 +3013,4 @@ this.label= document.createElement('label');
         this.elements.button.className = 'hexagonal-button ' + className;
     }
 }
+
