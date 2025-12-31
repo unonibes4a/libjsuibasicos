@@ -1,244 +1,294 @@
-
-        class JsTools {   
-
-           static cssScroll=()=>{
-
-                 if (!document.getElementById("scrool302025dic")) {
-            const styleTag = document.createElement('style');
-            styleTag.id = "scrool302025dic";
-            styleTag.textContent = ` ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #333333; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: #454545; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #555555; }
-        * { scrollbar-width: thin; scrollbar-color: #454545 #333333; }
-       html{position:relative left:0%; top:0%; width: 100%;  height:  100%;}
-       body{position:relative left:0%; top:0%; width: 100%;  height:  100%;} 
-            `;
-            document.head.appendChild(styleTag);
-        }
-            
-            }
-    static createDiv(id = '', classNames = [], innerHTML = '', parent = null) {
-        const div = document.createElement('div');
-        if (id) div.id = id;
-        if (classNames.length) div.classList.add(...classNames);
-        if (innerHTML) div.innerHTML = innerHTML;
-        if (parent instanceof HTMLElement) parent.appendChild(div);
-        return div;
-    }
-
-    static createElement(tagName, id = '', classNames = [], innerHTML = '', parent = null, attributes = {}) {
-        const element = document.createElement(tagName);
-        if (id) element.id = id;
-        if (classNames.length) element.classList.add(...classNames);
-        if (innerHTML) element.innerHTML = innerHTML;
-        for (const attr in attributes) {
-            if (Object.prototype.hasOwnProperty.call(attributes, attr)) {
-                element.setAttribute(attr, attributes[attr]);
-            }
-        }
-        if (parent instanceof HTMLElement) parent.appendChild(element);
-        return element;
-    }
-
-    static changeParentElement(childElement, newParent, referenceNode = null) {
-        if (!(childElement instanceof HTMLElement)) {
-            console.error("childElement must be an HTMLElement.");
-            return;
-        }
-        if (newParent && !(newParent instanceof HTMLElement)) {
-            console.error("newParent must be an HTMLElement or null.");
-            return;
-        }
-        if (referenceNode && !(referenceNode instanceof HTMLElement)) {
-            console.error("referenceNode must be an HTMLElement or null.");
-            return;
-        }
-
-        if (newParent) {
-            if (referenceNode) {
-                newParent.insertBefore(childElement, referenceNode);
-            } else {
-                newParent.appendChild(childElement);
-            }
-        } else {
-            if (childElement.parentNode) {
-                childElement.parentNode.removeChild(childElement);
-            }
-        }
-    }
-
-    static deleteElement(element) {
-        if (element instanceof HTMLElement && element.parentNode) {
-            element.parentNode.removeChild(element);
-        } else if (!(element instanceof HTMLElement)) {
-            console.error("Argument must be an HTMLElement.");
-        }
-    }
-
-    static emptyElement(element) {
-        if (element instanceof HTMLElement) {
-            while (element.firstChild) {
-                element.removeChild(element.firstChild);
-            }
-        } else {
-            console.error("Argument must be an HTMLElement.");
-        }
-    }
-
-    static cloneElement(element, deep = true, newParent = null) {
-        if (element instanceof HTMLElement) {
-            const clone = element.cloneNode(deep);
-            if (newParent instanceof HTMLElement) {
-                newParent.appendChild(clone);
-            }
-            return clone;
-        } else {
-            console.error("Argument must be an HTMLElement.");
-            return null;
-        }
-    }
-
  
-    static addClass(element, ...classNames) {
-        if (element instanceof HTMLElement) {
-            element.classList.add(...classNames);
-        } else {
-            console.error("Element must be an HTMLElement.");
+        class JsTools {
+            static cssScroll = () => {
+                if (!document.getElementById("scrool302025dic")) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = "scrool302025dic";
+                    styleTag.textContent = ` ::-webkit-scrollbar { width: 8px; height: 8px; }
+                ::-webkit-scrollbar-track { background: #333333; border-radius: 4px; }
+                ::-webkit-scrollbar-thumb { background: #454545; border-radius: 4px; }
+                ::-webkit-scrollbar-thumb:hover { background: #555555; }
+                * { scrollbar-width: thin; scrollbar-color: #454545 #333333; }
+               html{position:relative; left:0%; top:0%; width: 100%;  height:  100%;}
+               body{position:relative; left:0%; top:0%; width: 100%;  height:  100%;} 
+               
+        .message {
+            background-color: #373737;
+            color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            opacity: 0;
+            transform: translateY(100%);
+            animation: slideIn 0.5s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
         }
-    }
 
-    static removeClass(element, ...classNames) {
-        if (element instanceof HTMLElement) {
-            element.classList.remove(...classNames);
-        } else {
-            console.error("Element must be an HTMLElement.");
-        }
-    }
-
-    static toggleClass(element, className, force) {
-        if (element instanceof HTMLElement) {
-            element.classList.toggle(className, force);
-        } else {
-            console.error("Element must be an HTMLElement.");
-        }
-    }
-
-    static hasClass(element, className) {
-        if (element instanceof HTMLElement) {
-            return element.classList.contains(className);
-        } else {
-            console.error("Element must be an HTMLElement.");
-            return false;
-        }
-    }
-
-    
-    static setAttribute(element, attributeName, value) {
-        if (element instanceof HTMLElement) {
-            element.setAttribute(attributeName, value);
-        } else {
-            console.error("Element must be an HTMLElement.");
-        }
-    }
-
-    static getAttribute(element, attributeName) {
-        if (element instanceof HTMLElement) {
-            return element.getAttribute(attributeName);
-        } else {
-            console.error("Element must be an HTMLElement.");
-            return null;
-        }
-    }
-
-    static removeAttribute(element, attributeName) {
-        if (element instanceof HTMLElement) {
-            element.removeAttribute(attributeName);
-        } else {
-            console.error("Element must be an HTMLElement.");
-        }
-    }
-
- 
-    static setStyle(element, property, value) {
-        if (element instanceof HTMLElement) {
-            element.style[property] = value;
-        } else {
-            console.error("Element must be an HTMLElement.");
-        }
-    }
-
-    static getStyle(element, property) {
-        if (element instanceof HTMLElement) {
-            return getComputedStyle(element)[property];
-        } else {
-            console.error("Element must be an HTMLElement.");
-            return null;
-        }
-    }
-
- 
-    static on(element, eventType, handler, options = {}) {
-        if (element instanceof HTMLElement) {
-            element.addEventListener(eventType, handler, options);
-        } else {
-            console.error("Element must be an HTMLElement.");
-        }
-    }
-
-    static off(element, eventType, handler, options = {}) {
-        if (element instanceof HTMLElement) {
-            element.removeEventListener(eventType, handler, options);
-        } else {
-            console.error("Element must be an HTMLElement.");
-        }
-    }
-
- 
-    static getById(id) {
-        return document.getElementById(id);
-    }
-
-    static query(selector, parent = document) {
-        return parent.querySelector(selector);
-    }
-
-    static queryAll(selector, parent = document) {
-        return Array.from(parent.querySelectorAll(selector));
-    }
-
- 
-    static debounce(func, delay) {
-        let timeout;
-        return function(...args) {
-            const context = this;
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(context, args), delay);
-        };
-    }
-
-    static throttle(func, limit) {
-        let inThrottle;
-        let lastResult;
-        return function(...args) {
-            const context = this;
-            if (!inThrottle) {
-                inThrottle = true;
-                lastResult = func.apply(context, args);
-                setTimeout(() => inThrottle = false, limit);
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
-            return lastResult;
-        };
-    }
-
-    static scrollToElement(element, options = { behavior: 'smooth' }) {
-        if (element instanceof HTMLElement) {
-            element.scrollIntoView(options);
-        } else {
-            console.error("Element must be an HTMLElement.");
         }
-    }
-}
+
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+        }
+
+        .message.hide {
+            animation: slideOut 0.8s forwards ease-out;
+        }
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+            static createDiv(id = '', classNames = [], innerHTML = '', parent = null) {
+                const div = document.createElement('div');
+                if (id) div.id = id;
+                if (classNames.length) div.classList.add(...classNames);
+                if (innerHTML) div.innerHTML = innerHTML;
+                if (parent instanceof HTMLElement) parent.appendChild(div);
+                return div;
+            }
+
+            static createElement(tagName, id = '', classNames = [], innerHTML = '', parent = null, attributes = {}) {
+                const element = document.createElement(tagName);
+                if (id) element.id = id;
+                if (classNames.length) element.classList.add(...classNames);
+                if (innerHTML) element.innerHTML = innerHTML;
+                for (const attr in attributes) {
+                    if (Object.prototype.hasOwnProperty.call(attributes, attr)) {
+                        element.setAttribute(attr, attributes[attr]);
+                    }
+                }
+                if (parent instanceof HTMLElement) parent.appendChild(element);
+                return element;
+            }
+
+            static changeParentElement(childElement, newParent, referenceNode = null) {
+                if (!(childElement instanceof HTMLElement)) {
+                    return;
+                }
+                if (newParent && !(newParent instanceof HTMLElement)) {
+                    return;
+                }
+                if (referenceNode && !(referenceNode instanceof HTMLElement)) {
+                    return;
+                }
+
+                if (newParent) {
+                    if (referenceNode) {
+                        newParent.insertBefore(childElement, referenceNode);
+                    } else {
+                        newParent.appendChild(childElement);
+                    }
+                } else {
+                    if (childElement.parentNode) {
+                        childElement.parentNode.removeChild(childElement);
+                    }
+                }
+            }
+
+            static deleteElement(element) {
+                if (element instanceof HTMLElement && element.parentNode) {
+                    element.parentNode.removeChild(element);
+                }
+            }
+
+            static emptyElement(element) {
+                if (element instanceof HTMLElement) {
+                    while (element.firstChild) {
+                        element.removeChild(element.firstChild);
+                    }
+                }
+            }
+
+            static cloneElement(element, deep = true, newParent = null) {
+                if (element instanceof HTMLElement) {
+                    const clone = element.cloneNode(deep);
+                    if (newParent instanceof HTMLElement) {
+                        newParent.appendChild(clone);
+                    }
+                    return clone;
+                }
+                return null;
+            }
+
+            static addClass(element, ...classNames) {
+                if (element instanceof HTMLElement) {
+                    element.classList.add(...classNames);
+                }
+            }
+
+            static removeClass(element, ...classNames) {
+                if (element instanceof HTMLElement) {
+                    element.classList.remove(...classNames);
+                }
+            }
+
+            static toggleClass(element, className, force) {
+                if (element instanceof HTMLElement) {
+                    element.classList.toggle(className, force);
+                }
+            }
+
+            static hasClass(element, className) {
+                if (element instanceof HTMLElement) {
+                    return element.classList.contains(className);
+                }
+                return false;
+            }
+
+            static setAttribute(element, attributeName, value) {
+                if (element instanceof HTMLElement) {
+                    element.setAttribute(attributeName, value);
+                }
+            }
+
+            static getAttribute(element, attributeName) {
+                if (element instanceof HTMLElement) {
+                    return element.getAttribute(attributeName);
+                }
+                return null;
+            }
+
+            static removeAttribute(element, attributeName) {
+                if (element instanceof HTMLElement) {
+                    element.removeAttribute(attributeName);
+                }
+            }
+
+            static setStyle(element, property, value) {
+                if (element instanceof HTMLElement) {
+                    element.style[property] = value;
+                }
+            }
+
+            static getStyle(element, property) {
+                if (element instanceof HTMLElement) {
+                    return getComputedStyle(element)[property];
+                }
+                return null;
+            }
+
+            static on(element, eventType, handler, options = {}) {
+                if (element instanceof HTMLElement) {
+                    element.addEventListener(eventType, handler, options);
+                }
+            }
+
+            static off(element, eventType, handler, options = {}) {
+                if (element instanceof HTMLElement) {
+                    element.removeEventListener(eventType, handler, options);
+                }
+            }
+
+            static getById(id) {
+                return document.getElementById(id);
+            }
+
+            static query(selector, parent = document) {
+                return parent.querySelector(selector);
+            }
+
+            static queryAll(selector, parent = document) {
+                return Array.from(parent.querySelectorAll(selector));
+            }
+
+            static debounce(func, delay) {
+                let timeout;
+                return function(...args) {
+                    const context = this;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), delay);
+                };
+            }
+
+            static throttle(func, limit) {
+                let inThrottle;
+                let lastResult;
+                return function(...args) {
+                    const context = this;
+                    if (!inThrottle) {
+                        inThrottle = true;
+                        lastResult = func.apply(context, args);
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                    return lastResult;
+                };
+            }
+
+            static scrollToElement(element, options = { behavior: 'smooth' }) {
+                if (element instanceof HTMLElement) {
+                    element.scrollIntoView(options);
+                }
+            }
+
+            static createMessage(text,backgroundColor = '#373737d7', duration = 5000, containerId = 'message-container', maxMessages = 20) {
+                 
+                let container = JsTools.getById(containerId);
+                if (!container) {
+                    container = JsTools.createDiv(containerId, [], '', document.body);
+                    JsTools.setStyle(container, 'position', 'fixed');
+                    JsTools.setStyle(container, 'bottom', '20px');
+                    JsTools.setStyle(container, 'right', '20px');
+                    JsTools.setStyle(container, 'display', 'flex');
+                    JsTools.setStyle(container, 'flexDirection', 'column-reverse');
+                    JsTools.setStyle(container, 'gap', '10px');
+                    JsTools.setStyle(container, 'zIndex', '1000');
+                }
+
+                const messageElement = JsTools.createDiv('', ['message'], text, container);
+                JsTools.setStyle(messageElement, 'backgroundColor', backgroundColor);
+                
+                let messageInfo = {
+                    element: messageElement,
+                    timeoutId: null
+                };
+
+                if (!container.activeMessages) {
+                    container.activeMessages = [];
+                }
+                container.activeMessages.push(messageInfo);
+
+                messageInfo.timeoutId = setTimeout(() => {
+                    JsTools.hideMessage(messageElement, container.activeMessages);
+                }, duration);
+
+                if (container.activeMessages.length > maxMessages) {
+                    const oldestMessageInfo = container.activeMessages.shift();
+                    clearTimeout(oldestMessageInfo.timeoutId);
+                    JsTools.hideMessage(oldestMessageInfo.element, container.activeMessages, 0);
+                }
+            }
+
+            static hideMessage(messageElement, activeMessagesList, delay = 0) {
+                if (!messageElement) return;
+
+                setTimeout(() => {
+                    JsTools.addClass(messageElement, 'hide');
+
+                    messageElement.addEventListener('animationend', function handler() {
+                        JsTools.deleteElement(messageElement);
+                        const index = activeMessagesList.findIndex(info => info.element === messageElement);
+                        if (index !== -1) {
+                            activeMessagesList.splice(index, 1);
+                        }
+                        messageElement.removeEventListener('animationend', handler);
+                    }, { once: true });
+                }, delay);
+            }
+        }
 
  
 
