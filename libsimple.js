@@ -4,7 +4,7 @@
        
        
 
-class GioAudioTeclaDic302025no {
+class GioAudioTeclaDic302025 {
   constructor(htmlParent, idGenerico) {
     this.css();
     this.htmlParent = htmlParent;
@@ -677,7 +677,7 @@ class GioAudioTeclaDic302025no {
                     styleTag.textContent = ` ::-webkit-scrollbar { width: 8px; height: 8px; }
                 ::-webkit-scrollbar-track { background: #333333; border-radius: 4px; }
                 ::-webkit-scrollbar-thumb { background: #454545; border-radius: 4px; }
-                ::-webkit-scrollbar-thumb:hover { background: #555555; }
+                ::-webkit-scrollbar-thumb:hover { background: #303030; }
                 * { scrollbar-width: thin; scrollbar-color: #454545 #333333; }
                html{position:relative; left:0%; top:0%; width: 100%;  height:  100%;}
                body{position:relative; left:0%; top:0%; width: 100%;  height:  100%;} 
@@ -3013,4 +3013,3 @@ this.label= document.createElement('label');
         this.elements.button.className = 'hexagonal-button ' + className;
     }
 }
-
