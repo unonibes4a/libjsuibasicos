@@ -680,12 +680,7 @@ class GioAudioTeclaDic302025 {
                 ::-webkit-scrollbar-thumb:hover { background: #242424ff; }
                 * { scrollbar-width: thin; scrollbar-color: #454545 #333333; }
               
-                   html, body { 
-            width: 100%; 
-            height: 100%;  
-            margin: 0;  
-            padding: 1rem  1rem 1rem 1rem;  
-        }
+           
 
 			   .todobox {
                     max-height: 0;
