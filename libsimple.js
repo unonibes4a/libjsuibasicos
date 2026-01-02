@@ -3036,7 +3036,7 @@ this.label= document.createElement('label');
 
 
     class InputSimple {
-    constructor(parentHtml, idGenerico, labelText, inputValue = '', inputType = 'text', eventCallback = () => {}, inputClass = '') {
+    constructor(parentHtml, idGenerico, labelText, inputValue = '', inputType = 'text', eventCallback = () => {}, inputClass = '', minValue = null, maxValue = null) {
         this.css();
         this.parentHtml = parentHtml;
         this.idGenerico = idGenerico;
@@ -3068,6 +3068,14 @@ this.label= document.createElement('label');
             default:
                 this.input.type = 'text';
                 break;
+        }
+
+        // Agregar min y max si se proporcionan
+        if (minValue !== null && this.input.type === 'number') {
+            this.input.min = minValue;
+        }
+        if (maxValue !== null && this.input.type === 'number') {
+            this.input.max = maxValue;
         }
 
         if (inputClass) {
@@ -3619,4 +3627,3 @@ class SingleRadioButtonControl {
         return this.input.value;
     }
 }
- 
