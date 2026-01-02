@@ -3643,7 +3643,7 @@ class Botonrectangulo{
                 this.element=document.createElement("label");
                  if(htmlForLabel){ this.element.htmlFor=htmlForLabel;}
                  if(cssclass){this.element.classList.add(cssclass)}
-                this.element.onclick=()=>{  (evento){evento(this.element);}    }           
+                this.element.onclick=()=>{  if(evento){evento(this.element);}}             
           this.parentHtml.appendChild(styleTag);
             }
              css  = () => {
