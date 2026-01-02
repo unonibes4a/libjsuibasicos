@@ -231,37 +231,165 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         
- 
+  
 document.addEventListener('DOMContentLoaded', () => { 
     const container = document.querySelector('.container');
- 
-    new InputSimple(container, 'demo1', 'Nombre:', '', 'text', (val) => {
-        console.log('InputSimple value:', val);
-    });
     
  
-    new Btnormal(container, 'demo2', 'Guardar Cambios', () => {
+    const title = document.createElement('h2');
+    title.textContent = '  Ejemplos de InputSimple';
+    title.style.color = '#ffffff';
+    title.style.marginBottom = '20px';
+    container.appendChild(title);
+    
+ 
+    const textDemo = document.createElement('div');
+    textDemo.innerHTML = '<h3 style="color: #4a90e2; margin: 20px 0 10px 0;">  Texto (text)</h3>';
+    container.appendChild(textDemo);
+    
+    new InputSimple(container, 'nombre', 'Nombre completo:', 'Juan Pérez', 'text', (val) => {
+        console.log('  Texto:', val, '| Tipo:', typeof val);
+        document.getElementById('result-text').textContent = `Valor: "${val}" (${typeof val})`;
+    });
+    
+    const resultText = document.createElement('div');
+    resultText.id = 'result-text';
+    resultText.style.color = '#888888';
+    resultText.style.marginLeft = '12px';
+    resultText.style.fontSize = '13px';
+    resultText.textContent = 'Valor: "Juan Pérez" (string)';
+    container.appendChild(resultText);
+    
+ 
+    const intDemo = document.createElement('div');
+    intDemo.innerHTML = '<h3 style="color: #4a90e2; margin: 30px 0 10px 0;">  Número Entero (int) con min y max</h3>';
+    container.appendChild(intDemo);
+    
+    new InputSimple(container, 'edad', 'Edad (min: 18, max: 99):', 25, 'int', (val) => {
+        console.log('  Entero:', val, '| Tipo:', typeof val);
+        document.getElementById('result-int').textContent = `Valor: ${val} (${typeof val})`;
+    }, '', 18, 99);
+    
+    const resultInt = document.createElement('div');
+    resultInt.id = 'result-int';
+    resultInt.style.color = '#888888';
+    resultInt.style.marginLeft = '12px';
+    resultInt.style.fontSize = '13px';
+    resultInt.textContent = 'Valor: 25 (number) - Solo acepta entre 18 y 99';
+    container.appendChild(resultInt);
+    
+   
+    const floatDemo = document.createElement('div');
+    floatDemo.innerHTML = '<h3 style="color: #4a90e2; margin: 30px 0 10px 0;"> Número Decimal (float) con min y max</h3>';
+    container.appendChild(floatDemo);
+    
+    new InputSimple(container, 'precio', 'Precio (min: 0, max: 1000):', 19.99, 'float', (val) => {
+        console.log('  Decimal:', val, '| Tipo:', typeof val);
+        document.getElementById('result-float').textContent = `Valor: ${val} (${typeof val})`;
+    }, '', 0, 1000);
+    
+    const resultFloat = document.createElement('div');
+    resultFloat.id = 'result-float';
+    resultFloat.style.color = '#888888';
+    resultFloat.style.marginLeft = '12px';
+    resultFloat.style.fontSize = '13px';
+    resultFloat.textContent = 'Valor: 19.99 (number) - Solo acepta entre 0 y 1000';
+    container.appendChild(resultFloat);
+    
+   
+    const numberDemo = document.createElement('div');
+    numberDemo.innerHTML = '<h3 style="color: #4a90e2; margin: 30px 0 10px 0;">  Compases (min: 1, max: 32)</h3>';
+    container.appendChild(numberDemo);
+    
+    new InputSimple(container, 'compases', 'Compases:', 1, 'int', (val) => {
+        console.log('🎵 Compases:', val, '| Tipo:', typeof val);
+        document.getElementById('result-number').textContent = `Valor: ${val} (${typeof val})`;
+    }, 'global-measure-input', 1, 32);
+    
+    const resultNumber = document.createElement('div');
+    resultNumber.id = 'result-number';
+    resultNumber.style.color = '#888888';
+    resultNumber.style.marginLeft = '12px';
+    resultNumber.style.fontSize = '13px';
+    resultNumber.textContent = 'Valor: 1 (number) - Solo acepta entre 1 y 32';
+    container.appendChild(resultNumber);
+    
+  
+    const separator = document.createElement('hr');
+    separator.style.border = 'none';
+    separator.style.borderTop = '2px solid #313131';
+    separator.style.margin = '40px 0 20px 0';
+    container.appendChild(separator);
+    
+  
+    const otherTitle = document.createElement('h2');
+    otherTitle.textContent = '  Otros Componentes';
+    otherTitle.style.color = '#ffffff';
+    otherTitle.style.marginBottom = '20px';
+    container.appendChild(otherTitle);
+       
+    new Btnormal(container, 'demo2', '  Guardar Cambios', () => {
         alert('¡Botón presionado!');
     });
     
-   
-    new InputWithButtonControl(container, 'demo3', 'Escribe algo...', 'Enviar', 
+ 
+    new InputWithButtonControl(container, 'demo3', 'Escribe algo...', '  Enviar', 
         (val) => console.log('Escribiendo:', val),
         (val) => alert('Enviado: ' + val)
     );
     
-    
+ 
     new SimpleInputControl(container, 'demo4', 'Email', '', 'text', (val) => {
         console.log('SimpleInput value:', val);
     });
     
-  
+    
+    const radioTitle = document.createElement('div');
+    radioTitle.innerHTML = '<h4 style="color: #ffffff; margin: 20px 0 10px 12px;">Radio Buttons:</h4>';
+    container.appendChild(radioTitle);
+    
     new SingleRadioButtonControl(container, 'demo5', 'opcion', 'Opción 1', 'opt1', true, (val, checked) => {
         console.log('Radio:', val, checked);
     });
     new SingleRadioButtonControl(container, 'demo6', 'opcion', 'Opción 2', 'opt2', false, (val, checked) => {
         console.log('Radio:', val, checked);
     });
+    
+ 
+    const note = document.createElement('div');
+    note.style.marginTop = '30px';
+    note.style.padding = '15px';
+    note.style.backgroundColor = '#313131';
+    note.style.borderRadius = '8px';
+    note.style.color = '#ffffff';
+    note.innerHTML = `
+        <strong>  Consejo:</strong> Abre la consola del navegador (F12) para ver los valores en tiempo real mientras escribes.
+    `;
+    container.appendChild(note);
+
+    new InputSimple(
+    container, 
+    'edad', 
+    'Edad:', 
+    25,            
+    'int',        
+    (val) => console.log(val), 
+    '',            
+    18,           
+    99           
+);
+new InputSimple(
+    container, 
+    'precio', 
+    'Precio ($):', 
+    19.99, 
+    'float', 
+    (val) => console.log('Precio:', val), 
+    '', 
+    0.01,      // MIN: mínimo 1 centavo
+    9999.99    // MAX: máximo precio
+);
+    
 });
     </script>
 
