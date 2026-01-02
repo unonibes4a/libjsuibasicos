@@ -3589,7 +3589,7 @@ class SingleRadioButtonControl {
 
                 .radio-button__input:checked + .radio-button__label .radio-button__custom {
                   border: 6px solid #4a90e2;
-                  background-color: #ffffff;
+                
                   box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
                 }
 
