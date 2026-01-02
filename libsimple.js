@@ -3634,3 +3634,50 @@ class SingleRadioButtonControl {
         return this.input.value;
     }
 }
+
+class Botonrectangulo{
+            constructor(parentHtml,idGenerico,evento=()=>{},htmlForLabel,cssclass=null){
+                this.css();                
+                this.parentHtml=parentHtml;
+                this.idGenerico=idGenerico;
+                this.element=document.createElement("label");
+                 if(htmlForLabel){ this.element.htmlFor=htmlForLabel;}
+                 if(cssclass){this.element.classList.add(cssclass)}
+                this.element.onclick=()=>{  (evento){evento(this.element);}    }           
+          this.parentHtml.appendChild(styleTag);
+            }
+             css  = () => {
+                if (!document.getElementById("otonrectangolo")) {
+                    const styleTag = document.createElement('style');
+                    styleTag.id = "otonrectangolo";
+                    styleTag.textContent = `   .btoolabelmini226 {
+                     margin: 0.4rem 0.4rem 0.4rem 0.4rem;
+    position: relative;
+    top: 0%;
+    left: 0%;
+    height: 45px;
+    width: fit-content;
+    font-size: 12px;
+    border-radius: 9px;
+    background-color: #111111;
+    color: #ced4d6;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;  
+    align-content: center;
+    cursor: pointer;
+    padding: 0px 12px; 
+}
+
+.btoolabelmini226:hover {
+    background-color: #242424;
+    color: #ffffff;
+}
+                    `;
+                    document.head.appendChild(styleTag);
+                }
+            }
+
+        }
