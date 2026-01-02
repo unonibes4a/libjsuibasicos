@@ -681,6 +681,24 @@ class GioAudioTeclaDic302025 {
                 * { scrollbar-width: thin; scrollbar-color: #454545 #333333; }
                html{position:relative; left:0%; top:0%; width: 100%;  height:  100%;}
                body{position:relative; left:0%; top:0%; width: 100%;  height:  100%;} 
+
+			   .todobox {
+                    max-height: 0;
+                    overflow: visible;
+                    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                                visibility 0s 0.4s, 
+                                opacity 0.4s ease;
+                    padding: 0 15px;
+                    display: flex;
+                    justify-content: flex-start;
+                    gap: 10px;
+                    flex-wrap: wrap;
+                    padding-top: 0;
+                    padding-bottom: 0;
+                    position: relative;
+                    visibility: hidden;
+                    opacity: 0;
+                }
                
         .message {
             background-color: #373737;
@@ -3013,3 +3031,4 @@ this.label= document.createElement('label');
         this.elements.button.className = 'hexagonal-button ' + className;
     }
 }
+
