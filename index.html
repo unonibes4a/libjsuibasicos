@@ -1,3 +1,5 @@
+ 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -99,30 +101,32 @@
             <div id="date-range-parent"></div>
         </div>
     </div>
-
+  <div class="container">
+        <input type="file" id="i1" style="display: none;">
+    </div>
     <script> 
  
 document.addEventListener('DOMContentLoaded', () => {
     const buttonParent = document.getElementById('button-parent');
     
-    // Botón hexagonal normal
+ 
     new HexagonalButton(buttonParent, 'hexBtn1', 'Guardar', 
         () => { console.log('Botón Guardar clickeado'); }
     );
     
-    // Botón hexagonal de peligro
+    
     const dangerBtn = new HexagonalButton(buttonParent, 'hexBtn2', 'Eliminar', 
         () => { alert('¡Acción peligrosa!'); }
     );
     dangerBtn.setStyle('danger');
     
-    // Botón hexagonal de éxito
+ 
     const successBtn = new HexagonalButton(buttonParent, 'hexBtn3', 'Confirmar', 
         () => { console.log('Confirmado'); }
     );
     successBtn.setStyle('success');
     
-    // Botón hexagonal de advertencia
+   
     const warningBtn = new HexagonalButton(buttonParent, 'hexBtn4', 'Advertir', 
         () => { console.log('Advertencia'); }
     );
@@ -225,6 +229,40 @@ document.addEventListener('DOMContentLoaded', () => {
                JsTools.createMessage("toolsjs ");
          
         });
+
+        
+ 
+document.addEventListener('DOMContentLoaded', () => { 
+    const container = document.querySelector('.container');
+ 
+    new InputSimple(container, 'demo1', 'Nombre:', '', 'text', (val) => {
+        console.log('InputSimple value:', val);
+    });
+    
+ 
+    new Btnormal(container, 'demo2', 'Guardar Cambios', () => {
+        alert('¡Botón presionado!');
+    });
+    
+   
+    new InputWithButtonControl(container, 'demo3', 'Escribe algo...', 'Enviar', 
+        (val) => console.log('Escribiendo:', val),
+        (val) => alert('Enviado: ' + val)
+    );
+    
+    
+    new SimpleInputControl(container, 'demo4', 'Email', '', 'text', (val) => {
+        console.log('SimpleInput value:', val);
+    });
+    
+  
+    new SingleRadioButtonControl(container, 'demo5', 'opcion', 'Opción 1', 'opt1', true, (val, checked) => {
+        console.log('Radio:', val, checked);
+    });
+    new SingleRadioButtonControl(container, 'demo6', 'opcion', 'Opción 2', 'opt2', false, (val, checked) => {
+        console.log('Radio:', val, checked);
+    });
+});
     </script>
 
 </body>
